@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Nouabook
 ================================
 
@@ -114,3 +115,6 @@ If you want to help us translate votainteligente please join our project in [poe
 ## Licensing
 
 VotaInteligente is free and released as open source software covered by the terms of the [GNU Public License](http://www.gnu.org/licenses/gpl-3.0.html) (GPL v3)
+=======
+
+>>>>>>> 74b77ffc73ee1609a036261010375c8454c5a796

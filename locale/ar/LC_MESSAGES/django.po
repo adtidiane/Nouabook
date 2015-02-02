@@ -1,0 +1,748 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: nouabook\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-10-02 15:56+0100\n"
+"PO-Revision-Date: 2014-12-10 10:24-0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"X-Generator: Poedit 1.6.3\n"
+
+#: .\elections\forms.py:16
+#: .\elections\tests\election_tags_based_search_tests.py:56
+msgid "Busca tu comuna"
+msgstr ""
+
+#: .\elections\forms.py:72 .\elections\forms.py:120
+msgid "Nombre"
+msgstr ""
+
+#: .\elections\forms.py:73 .\elections\forms.py:121
+msgid "Correo electrónico"
+msgstr ""
+
+#: .\elections\forms.py:74 .\elections\forms.py:122
+msgid "Asunto"
+msgstr ""
+
+#: .\elections\forms.py:75 .\elections\forms.py:123
+msgid "texto"
+msgstr ""
+
+#: .\elections\forms.py:76 .\elections\forms.py:124
+msgid "Destinatarios"
+msgstr ""
+
+#: .\elections\forms.py:79
+msgid "Puedes seleccinar a más de un candidato para dirigir tu pregunta"
+msgstr ""
+
+#: .\elections\forms.py:80
+msgid ""
+"Identíficate de alguna forma: Estudiante, Obrero, Democrático, Dirigente, "
+"etc."
+msgstr ""
+
+#: .\elections\forms.py:84
+msgid "Debes identificarte de alguna forma."
+msgstr ""
+
+#: .\elections\forms.py:127
+msgid "Selectionner un député"
+msgstr ""
+
+#: .\elections\forms.py:128
+msgid "Votre nom"
+msgstr ""
+
+#: .\elections\forms.py:132
+msgid "champ obligatoire"
+msgstr ""
+
+#: .\elections\models.py:34
+msgid "Puedes usar Markdown. <br/> "
+msgstr ""
+
+#: .\elections\models.py:36
+msgid "Esta elección debe usar preguntales?"
+msgstr ""
+
+#: .\elections\models.py:37
+msgid "Esta elección debe usar ranking"
+msgstr ""
+
+#: .\elections\models.py:38
+msgid "Esta elección debe usar frente a frente"
+msgstr ""
+
+#: .\elections\models.py:39
+msgid "Esta elección debe usar 1/2 naranja"
+msgstr ""
+
+#: .\elections\models.py:40
+msgid "Esta elección debe usar cuestionario"
+msgstr ""
+
+#: .\elections\models.py:54
+msgid "Mi Elección"
+msgstr ""
+
+#: .\elections\models.py:55
+msgid "Mis Elecciones"
+msgstr ""
+
+#: .\elections\models.py:81
+msgid "Extra Info de candidato"
+msgstr ""
+
+#: .\elections\models.py:82
+msgid "Extra Info de candidatos"
+msgstr ""
+
+#: .\elections\models.py:172
+msgid "Mensaje de preguntales"
+msgstr ""
+
+#: .\elections\models.py:173
+msgid "Mensajes de preguntales"
+msgstr ""
+
+#: .\elections\views.py:416 .\elections\views.py:469 .\elections\views.py:486
+#: .\elections\views.py:559 .\elections\views.py:670 .\elections\views.py:692
+msgid "Question à"
+msgstr "سؤال موجه الى"
+
+#: .\elections\views.py:417 .\elections\views.py:470 .\elections\views.py:487
+#: .\elections\views.py:560 .\elections\views.py:671 .\elections\views.py:693
+msgid "Réponse par"
+msgstr "اجابة"
+
+#: .\elections\views.py:418 .\elections\views.py:471 .\elections\views.py:488
+#: .\elections\views.py:561 .\elections\views.py:672 .\elections\views.py:694
+msgid "sur"
+msgstr "حول"
+
+#: .\elections\views.py:668 .\elections\views.py:687
+#: .\elections\templates\elections\profil_question.html.py:87
+msgid "Aucune Question"
+msgstr "لاتوجد أسئلة"
+
+#: .\elections\templates\404_new.html.py:17
+msgid "Erreur"
+msgstr "خطأ"
+
+#: .\elections\templates\404_new.html.py:18
+msgid "La page demandée n'existe pas"
+msgstr "عدم وجود الصفحة المطلوبة"
+
+#: .\elections\templates\404_new.html.py:18
+msgid "recommencer à nouveau par"
+msgstr "البدء من جديد من"
+
+#: .\elections\templates\404_new.html.py:18
+msgid "la page principale."
+msgstr "الصفحة الرئيسية"
+
+#: .\elections\templates\base.html.py:13 .\elections\templates\base.html.py:73
+msgid "Nouabook.ma"
+msgstr ""
+
+#: .\elections\templates\base.html.py:18
+msgid "Parlement, politique, Maroc, Benkirane, gouvernement, opposition"
+msgstr "البرلمان، السياسة، المغرب، بنكيران، الحكومة، المعارضة"
+
+#: .\elections\templates\base.html.py:52
+msgid "Abonnez-vous à la newsletter"
+msgstr "اشتركوا في النشرة الإخبارية"
+
+#: .\elections\templates\base.html.py:56
+#: .\elections\templates\elections\home3.html.py:21
+msgid "Trouvez vos député-es"
+msgstr "اعثروا على نائباتكم و نوابكم"
+
+#: .\elections\templates\base.html.py:56
+msgid "Recherche"
+msgstr "ابحث"
+
+#: .\elections\templates\base.html.py:66
+msgid "Abonnez-vous à notre chaîne Youtube"
+msgstr "اشتركوا في قناتنا على يويتوب"
+
+#: .\elections\templates\base.html.py:67
+msgid "Aimez notre page sur Facebook!"
+msgstr "اضغطوا على زر الاعجاب على صفحتنا على  الفايسبوك"
+
+#: .\elections\templates\base.html.py:68
+msgid "Suivez nous sur Twitter!"
+msgstr "تابعونا على تويتر"
+
+#: .\elections\templates\base.html.py:75
+#: .\elections\templates\elections\deputes_v2.html.py:42
+msgid "Vos député-es"
+msgstr "نوابكم/نائباتكم"
+
+#: .\elections\templates\base.html.py:76
+#: .\elections\templates\elections\home3.html.py:95
+#: .\elections\templates\elections\profil_v2.html.py:83
+#: .\elections\templates\elections\question_v2.html.py:35
+msgid "Vos questions"
+msgstr "أسئلتكم"
+
+#: .\elections\templates\base.html.py:78 .\elections\templates\base.html.py:81
+msgid "Comment ça marche"
+msgstr "كيفية الإستعمال"
+
+#: .\elections\templates\base.html.py:83
+#: .\elections\templates\flatpages\charte.html.py:18
+#: .\elections\templates\flatpages\faq_v2.html.py:18
+#: .\elections\templates\flatpages\le-parlement.html.py:18
+#: .\elections\templates\flatpages\le-site.html.py:18
+msgid "Le site"
+msgstr "الموقع"
+
+#: .\elections\templates\base.html.py:84
+#: .\elections\templates\flatpages\charte.html.py:17
+#: .\elections\templates\flatpages\faq_v2.html.py:17
+#: .\elections\templates\flatpages\le-parlement.html.py:17
+#: .\elections\templates\flatpages\le-site.html.py:17
+msgid "Le parlement"
+msgstr "البرلمان"
+
+#: .\elections\templates\base.html.py:85
+#: .\elections\templates\flatpages\charte.html.py:19
+#: .\elections\templates\flatpages\faq_v2.html.py:19
+#: .\elections\templates\flatpages\le-parlement.html.py:19
+#: .\elections\templates\flatpages\le-site.html.py:19
+msgid "FAQ"
+msgstr "الأسئلة المتداولة"
+
+#: .\elections\templates\base.html.py:86
+#: .\elections\templates\flatpages\charte.html.py:20
+#: .\elections\templates\flatpages\faq_v2.html.py:20
+#: .\elections\templates\flatpages\le-parlement.html.py:20
+#: .\elections\templates\flatpages\le-site.html.py:20
+msgid "Charte d'utilisation"
+msgstr "ميثاق الاستعمال"
+
+#: .\elections\templates\base.html.py:89
+msgid "Partenaires"
+msgstr "الشركاء"
+
+#: .\elections\templates\base.html.py:90
+msgid "Blog"
+msgstr "المدونة"
+
+#: .\elections\templates\base.html.py:91
+#: .\elections\templates\elections\home3.html.py:24
+#: .\elections\templates\elections\posez_v2.html.py:37
+#: .\elections\templates\elections\profil_v2.html.py:73
+msgid "Posez votre question"
+msgstr " اطرحوا سؤالكم"
+
+#: .\elections\templates\base.html.py:93
+msgid "Menu"
+msgstr "اللائحة"
+
+#: .\elections\templates\base.html.py:100
+msgid "Abonnez-vous à notre newsletter"
+msgstr "اشتركوا في النشرة الإخبارية"
+
+#: .\elections\templates\base.html.py:103
+msgid "Nom"
+msgstr "الاسم الكامل"
+
+#: .\elections\templates\base.html.py:104
+msgid "votre@adresse.com"
+msgstr ""
+
+#: .\elections\templates\base.html.py:105
+msgid "s'abonner"
+msgstr "الاشتراك"
+
+#: .\elections\templates\base.html.py:118
+msgid "A propos"
+msgstr "بخصوص"
+
+#: .\elections\templates\base.html.py:119
+msgid "Presse"
+msgstr "الصحافة"
+
+#: .\elections\templates\base.html.py:120
+msgid "Plan du site"
+msgstr "تصميم الموقع"
+
+#: .\elections\templates\base.html.py:121
+msgid "Mentions légales"
+msgstr "البيانات القانونية"
+
+#: .\elections\templates\base.html.py:122
+msgid "Contact"
+msgstr "إتصلوا بنا"
+
+#: .\elections\templates\base.html.py:126
+msgid "Un projet de"
+msgstr "مشروع"
+
+#: .\elections\templates\base.html.py:130
+msgid "Sponsors"
+msgstr "المساندون"
+
+#: .\elections\templates\base.html.py:135
+msgid "Développé par"
+msgstr "تطوير"
+
+#: .\elections\templates\base.html.py:137
+msgid "Designed by"
+msgstr "تصميم"
+
+#: .\elections\templates\base.html.py:141
+msgid "Licence Creative Commons"
+msgstr "رخصة المشاع الابداعي"
+
+#: .\elections\templates\base.html.py:141
+msgid "de"
+msgstr "بواسطة"
+
+#: .\elections\templates\base.html.py:141
+msgid "SimSim-Participation Citoyenne"
+msgstr "سمسم-مشاركة مواطنة"
+
+#: .\elections\templates\base.html.py:141
+msgid "est mis à disposition selon les termes de la"
+msgstr "مرخص بموجب"
+
+#: .\elections\templates\base.html.py:141
+msgid "licence Creative Commons Attribution 4.0 International"
+msgstr "رخصة المشاع الإبداعي نَسب المُصنَّف 4.0 دولي"
+
+#: .\elections\templates\base.html.py:164
+msgid "Parti"
+msgstr "الحزب"
+
+#: .\elections\templates\base.html.py:165
+#: .\elections\templates\elections\deputes_v2.html.py:57
+msgid "Circonscription"
+msgstr "الدائرة الانتخابية"
+
+#: .\elections\templates\base.html.py:166
+#: .\elections\templates\elections\deputes_v2.html.py:67
+msgid "Commission"
+msgstr "اللجنة"
+
+#: .\elections\templates\base2.html.py:9
+msgid "Nouabook"
+msgstr ""
+
+#: .\elections\templates\base2.html.py:66
+msgid "suivez nous sur twitter"
+msgstr ""
+
+#: .\elections\templates\base2.html.py:71
+msgid "suivez nous sur google+"
+msgstr ""
+
+#: .\elections\templates\base2.html.py:76
+msgid "aimer notre page sur facebook"
+msgstr ""
+
+#: .\elections\templates\base2.html.py:143
+msgid "BLOG"
+msgstr ""
+
+#: .\elections\templates\base2.html.py:151
+msgid "QUESTIONS"
+msgstr ""
+
+#: .\elections\templates\base2.html.py:158
+msgid "DÉPUTÉ(E)S"
+msgstr ""
+
+#: .\elections\templates\base2.html.py:165
+msgid "MISSION"
+msgstr ""
+
+#: .\elections\templates\base2.html.py:172
+msgid "ACCUEIL"
+msgstr ""
+
+#: .\elections\templates\base2.html.py:188
+msgid "UN PROJET DE"
+msgstr ""
+
+#: .\elections\templates\base2.html.py:194
+msgid "SPONSORS"
+msgstr ""
+
+#: .\elections\templates\base2.html.py:205
+msgid "PLAN DU SITE"
+msgstr ""
+
+#: .\elections\templates\base2.html.py:206
+msgid "FACEBOOK"
+msgstr ""
+
+#: .\elections\templates\base2.html.py:209
+msgid "MENTIONS LÉGALES"
+msgstr ""
+
+#: .\elections\templates\base2.html.py:210
+msgid "TWITTER"
+msgstr ""
+
+#: .\elections\templates\base2.html.py:213
+msgid "CONTACT"
+msgstr ""
+
+#: .\elections\templates\admin\base_site.html.py:4
+msgid "Django site admin"
+msgstr ""
+
+#: .\elections\templates\elections\depute_html.html.py:37
+msgid "Veuillez remplir correctement les champs"
+msgstr "المرجو ملء الخانات بشكل صحيح"
+
+#: .\elections\templates\elections\depute_html.html.py:41
+#: .\elections\templates\elections\deputes_v2.html.py:128
+#: .\elections\templates\elections\posez_v2.html.py:125
+msgid "Aucun résultat ne correspond à votre recherche"
+msgstr "المعذرة لم يفلح بحثك في ايجاد نتيجة"
+
+#: .\elections\templates\elections\deputes_v2.html.py:5
+msgid "Parlement Marocain: Qui sont mes députés et députées? | Nouabook.ma"
+msgstr "البرلمان المغربي | من هم نوابي والنائباتي؟ |نوابك"
+
+#: .\elections\templates\elections\deputes_v2.html.py:8
+msgid ""
+"Faites votre recherche sur la liste des partis suivant : PJD, PPS, RNI, PAM, "
+"Istiqlal, USFP, Mouvement populaire, Union Constitutionelle"
+msgstr ""
+
+#: .\elections\templates\elections\deputes_v2.html.py:38
+msgid "Légende"
+msgstr "الدليل"
+
+#: .\elections\templates\elections\deputes_v2.html.py:39
+msgid "Actif"
+msgstr "مشارك"
+
+#: .\elections\templates\elections\deputes_v2.html.py:40
+msgid "Non actif"
+msgstr "غير مشارك"
+
+#: .\elections\templates\elections\deputes_v2.html.py:47
+msgid "Nom du/de la député"
+msgstr "اسم النائب أو النائبة"
+
+#: .\elections\templates\elections\deputes_v2.html.py:53
+msgid "Parti politique"
+msgstr "الحزب"
+
+#: .\elections\templates\elections\deputes_v2.html.py:63
+msgid "Prefecture ou province"
+msgstr "العمالة أو الإقليم"
+
+#: .\elections\templates\elections\deputes_v2.html.py:72
+msgid "Rechercher"
+msgstr "ابحث"
+
+#: .\elections\templates\elections\deputes_v2.html.py:91
+#: .\elections\templates\elections\deputes_v2.html.py:106
+#: .\elections\templates\elections\profil_v2.html.py:99
+#: .\elections\templates\elections\question_v2.html.py:87
+msgid "Chargement en cours"
+msgstr "يتم تحميل الصفحة"
+
+#: .\elections\templates\elections\deputes_v2.html.py:123
+#: .\elections\templates\elections\deputes_v2.html.py:127
+#: .\elections\templates\elections\posez_v2.html.py:120
+#: .\elections\templates\elections\posez_v2.html.py:124
+msgid "votre député-e"
+msgstr "نائبكم/نائبتكم"
+
+#: .\elections\templates\elections\home3.html.py:7
+msgid "Parlement Marocain: posez vos questions aux députés | Nouabook.ma"
+msgstr "البرلمان المغربي: أطرحوا اسئلتكم على النائبات والنواب | نوابك"
+
+#: .\elections\templates\elections\home3.html.py:16
+msgid "Communiquez en ligne avec vos député-es"
+msgstr "تواصلوا مع نائباتكم و نوابكم مباشرة"
+
+#: .\elections\templates\elections\home3.html.py:17
+msgid ""
+"Adressez vos questions à vos député-es et recevez leurs réponses sur "
+"Nouabook.ma"
+msgstr "اطرحوا أسئلتكم على نائباتكم و نوابكم و توصلوا بأجوبتهم على Nouabook.ma"
+
+#: .\elections\templates\elections\home3.html.py:27
+msgid "Votez pour une question"
+msgstr "صوتوا على أسئلتكم و أجوبتكم المفضلة"
+
+#: .\elections\templates\elections\home3.html.py:35
+msgid "Nouvelles réponses"
+msgstr "أجوبة جديدة"
+
+#: .\elections\templates\elections\home3.html.py:46
+msgid "depute"
+msgstr ""
+
+#: .\elections\templates\elections\home3.html.py:52
+msgid "Lire la suite"
+msgstr "اقرأ المزيد"
+
+#: .\elections\templates\elections\home3.html.py:61
+msgid "Connaître vos député-es"
+msgstr "تعرفوا على نائباتكم و نوابكم  "
+
+#: .\elections\templates\elections\home3.html.py:98
+#: .\elections\templates\elections\question_v2.html.py:38
+msgid "Consultez les questions qui ont reçu des réponses!"
+msgstr "عرض الأسئلة التي تلقت ردودا"
+
+#: .\elections\templates\elections\home3.html.py:98
+#: .\elections\templates\elections\question_v2.html.py:38
+msgid "Questions - réponses"
+msgstr "أسئلة-أجوبة"
+
+#: .\elections\templates\elections\home3.html.py:99
+#: .\elections\templates\elections\question_v2.html.py:39
+msgid "Consultez les questions qui ont récemment été publiées!"
+msgstr "عرض الأسئلة التي تم نشرها حديثا "
+
+#: .\elections\templates\elections\home3.html.py:99
+#: .\elections\templates\elections\question_v2.html.py:39
+msgid "Récentes"
+msgstr "الأسئلة الحديثة"
+
+#: .\elections\templates\elections\home3.html.py:100
+#: .\elections\templates\elections\question_v2.html.py:40
+msgid "Consultez les questions les plus populaires sur le site!"
+msgstr "عرض الاسئلة الأكثر تداولا"
+
+#: .\elections\templates\elections\home3.html.py:100
+#: .\elections\templates\elections\question_v2.html.py:40
+msgid "Les plus votées"
+msgstr "الأسئلة الأكثر شعبية"
+
+#: .\elections\templates\elections\home3.html.py:118
+#: .\elections\templates\elections\home3.html.py:174
+#: .\elections\templates\elections\home3.html.py:220
+#: .\elections\templates\elections\profil_question.html.py:24
+#: .\elections\templates\elections\question_html.html.py:28
+#: .\elections\templates\elections\question_html.html.py:85
+#: .\elections\templates\elections\question_html.html.py:133
+#: .\elections\templates\elections\question_reponse_v2.html.py:73
+msgid "Liker cette question"
+msgstr " فضلوا هذا السؤال"
+
+#: .\elections\templates\elections\home3.html.py:119
+#: .\elections\templates\elections\home3.html.py:148
+#: .\elections\templates\elections\home3.html.py:175
+#: .\elections\templates\elections\home3.html.py:221
+#: .\elections\templates\elections\profil_question.html.py:25
+#: .\elections\templates\elections\profil_question.html.py:53
+#: .\elections\templates\elections\question_html.html.py:29
+#: .\elections\templates\elections\question_html.html.py:58
+#: .\elections\templates\elections\question_html.html.py:86
+#: .\elections\templates\elections\question_html.html.py:134
+#: .\elections\templates\elections\question_reponse_v2.html.py:74
+#: .\elections\templates\elections\question_reponse_v2.html.py:103
+msgid "Partager sur Twitter"
+msgstr "شاركوا على تويتير"
+
+#: .\elections\templates\elections\home3.html.py:120
+#: .\elections\templates\elections\home3.html.py:149
+#: .\elections\templates\elections\home3.html.py:176
+#: .\elections\templates\elections\home3.html.py:222
+#: .\elections\templates\elections\posez_v2.html.py:80
+#: .\elections\templates\elections\profil_question.html.py:26
+#: .\elections\templates\elections\profil_question.html.py:54
+#: .\elections\templates\elections\question_html.html.py:30
+#: .\elections\templates\elections\question_html.html.py:59
+#: .\elections\templates\elections\question_html.html.py:87
+#: .\elections\templates\elections\question_html.html.py:135
+#: .\elections\templates\elections\question_reponse_v2.html.py:75
+#: .\elections\templates\elections\question_reponse_v2.html.py:104
+msgid "Partager sur Facebook"
+msgstr "شاركوا على فايسبوك"
+
+#: .\elections\templates\elections\home3.html.py:147
+#: .\elections\templates\elections\profil_question.html.py:52
+#: .\elections\templates\elections\question_html.html.py:57
+#: .\elections\templates\elections\question_reponse_v2.html.py:102
+msgid "Liker cette réponse"
+msgstr "فضلوا هذا الجواب"
+
+#: .\elections\templates\elections\posez_v2.html.py:7
+msgid "Question pour vos députés et députées? Posez la sur Nouabook.ma"
+msgstr "سؤال للبرلمان؟ اطرحوه على نوابك | نوابك"
+
+#: .\elections\templates\elections\posez_v2.html.py:43
+msgid "A Madame / A Monsieur"
+msgstr "إلى النائب المحترم/النائبة المحترمة"
+
+#: .\elections\templates\elections\posez_v2.html.py:48
+msgid "Sujet"
+msgstr "الموضوع"
+
+#: .\elections\templates\elections\posez_v2.html.py:49
+msgid "Exemple: l'accès aux soins médicaux"
+msgstr "مثال: الاستفادة من الخدمات الصحية"
+
+#: .\elections\templates\elections\posez_v2.html.py:58
+#: .\elections\templates\elections\posez_v2.html.py:102
+msgid "Message"
+msgstr "رسالة"
+
+#: .\elections\templates\elections\posez_v2.html.py:64
+msgid "Nom complet"
+msgstr "الاسم الكامل"
+
+#: .\elections\templates\elections\posez_v2.html.py:65
+msgid "Nom et prénom"
+msgstr "الاسم الكامل"
+
+#: .\elections\templates\elections\posez_v2.html.py:68
+#: .\elections\templates\elections\posez_v2.html.py:69
+msgid "Votre ville"
+msgstr "مدينتكم"
+
+#: .\elections\templates\elections\posez_v2.html.py:72
+msgid "Votre email"
+msgstr "عنوان البريد الالكتروني"
+
+#: .\elections\templates\elections\posez_v2.html.py:73
+msgid "Votre adresse email"
+msgstr "عنوان البريد الالكتروني"
+
+#: .\elections\templates\elections\posez_v2.html.py:77
+msgid "J'ai lu et approuvé la charte d'utilisation"
+msgstr "أقر بأنني اطلعت على  دليل الاستعمال و أوافق على محتوياته"
+
+#: .\elections\templates\elections\posez_v2.html.py:82
+msgid "Connexion avec votre compte facebook"
+msgstr "الفيسبوك تسجيل الدخول"
+
+#: .\elections\templates\elections\posez_v2.html.py:89
+msgid "Envoyer"
+msgstr "إرسال"
+
+#: .\elections\templates\elections\posez_v2.html.py:107
+msgid "fermer"
+msgstr "غلق"
+
+#: .\elections\templates\elections\posez_v2.html.py:133
+msgid "Voir plus sur www.nouabook.ma"
+msgstr "اطلعوا على المزيد على www.nouabook.ma"
+
+#: .\elections\templates\elections\posez_v2.html.py:134
+msgid "Votre question est partagée sur facebook"
+msgstr "لقد تم نشر سؤالكم على الفايسبوك"
+
+#: .\elections\templates\elections\posez_v2.html.py:135
+msgid "Message non partagé, veuillez réessayer!"
+msgstr "لم يتم نشر سؤالكم، المرجو اعادة المحاولة"
+
+#: .\elections\templates\elections\posez_v2.html.py:136
+msgid "Veuillez confirmer avoir lu et approuvé la charte d’utilisation!"
+msgstr "المرجو تأكيد قراءتكم لميثاق الاستعمال"
+
+#: .\elections\templates\elections\posez_v2.html.py:137
+msgid "Connectez-vous pour partager sur facebook"
+msgstr "المرجو تسجيل دخولكم لنشر مشاركتكم على الفايسبوك"
+
+#: .\elections\templates\elections\posez_v2.html.py:138
+msgid "Connectez vous avec notre application NouabApp"
+msgstr " تواصل عبر تطبيق NouabApp"
+
+#: .\elections\templates\elections\posez_v2.html.py:139
+msgid "Veuillez saisir une adresse e-mail valide"
+msgstr "يرجى إدخال عنوان بريد الكتروني صحيح"
+
+#: .\elections\templates\elections\posez_v2.html.py:140
+msgid ""
+"IMPORTANT! Merci de réviser le contenu du formulaire que vous tentez de "
+"soumettre et de vous assurer que toutes les cases sont renseignées"
+msgstr ""
+"هام! المرجو مراجعة محتويات رسالتكم  التي تودون بعثها والتأكد من ملئ كافة "
+"الخانات"
+
+#: .\elections\templates\elections\profil_v2.html.py:8
+msgid "Avez-vous une question à lui poser?"
+msgstr "هل لديكم سؤال؟"
+
+#: .\elections\templates\elections\profil_v2.html.py:67
+msgid "Informations personnelles"
+msgstr "معلومات شخصية"
+
+#: .\elections\templates\elections\question_v2.html.py:5
+msgid "Questions des citoyens aux députés | Nouabook.ma"
+msgstr "اسئلة المواطنين إلى النواب البرلمانيين | المغرب"
+
+#: .\elections\templates\elections\question_v2.html.py:33
+msgid ""
+"Félicitations! Votre question a bien été enregistrée. Si celle-ci est "
+"conforme à la charte d’utilisation de Nouabook.ma, elle sera publiée "
+"aussitôt sur le site!"
+msgstr ""
+"تهانينا! لقد تم تسجيل سؤالكم  بنجاح. ترقبوا نشره قريبا اذا كان يتوافق  مع "
+"ميثاق استعمال .Nouabook.ma"
+
+#: .\elections\templates\pagination\ex_pagination.html.py:6
+msgid "precedent"
+msgstr ""
+
+#: .\elections\templates\pagination\ex_pagination.html.py:22
+msgid "suivant"
+msgstr "التالي"
+
+#: .\elections\templates\pagination\pagination.html.py:6
+msgid "Precedent"
+msgstr "السابق"
+
+#: .\elections\templates\pagination\pagination.html.py:24
+msgid "Suivant"
+msgstr "التالي"
+
+#: .\elections\templatetags\votainteligente_extras.py:142
+#: .\elections\templatetags\votainteligente_extras.py:168
+msgid "indisponible"
+msgstr "غير متوفرة"
+
+#: .\elections\templatetags\votainteligente_extras.py:144
+#: .\elections\templatetags\votainteligente_extras.py:170
+msgid "aucun"
+msgstr ""
+
+#: .\votainteligente\settings.py:63
+msgid "French"
+msgstr ""
+
+#: .\votainteligente\settings.py:64
+msgid "Arabic"
+msgstr ""
+
+#~ msgid "Saisissez les 3 premières lettres du nom"
+#~ msgstr "المرجو ادخال ثلاث حروف الأولى للاسم"
+
+#~ msgid "Connectez vous avec l\\&#39application NouabApp"
+#~ msgstr " تواصل عبر تطبيق NouabApp"
+
+#~ msgid "Question à "
+#~ msgstr "سؤال موجه الى"
+
+#~ msgid "Réponse par "
+#~ msgstr "اجاب"
+
+#~ msgid " sur "
+#~ msgstr "على"
