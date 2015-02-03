@@ -114,10 +114,10 @@ to use existing theme or new theme in your project, in your settings.py or local
 ## Facebook publication
 
 you need to create and set up a new facebook app in [developers part](https://developers.facebook.com) make it public, add the `publish_actions` permission
+to your app by sending request to be approved by facebook review team to allow everyone to use the permission.
 
-to your app by sending request to be approved by facebook review team to allow everyone to use the permission.If you don't get yet the permission
-
-the listed facebook profils in roles part of app (admin, developer, user test...) are able to use it and send messages. see More explanation in facebook developer part about review status.
+If you don't get yet the permission the listed facebook profils in roles part of app (admin, developer, user test...) are able to use it and send messages.
+see More explanation in facebook developer part about review status.
 
 
 ## Licensing
