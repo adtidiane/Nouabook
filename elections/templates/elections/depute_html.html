@@ -1,0 +1,50 @@
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% load votainteligente_extras %}
+{% load pagination_tags %}
+
+{% if deputes %}
+{% autopaginate deputes 15 %}
+<div class="mp-list">
+	{% for candidate in deputes %}
+	{% with reached=candidate.relation.reachable %}
+	<div class="mp">
+		<div class="profile-picture-wrapper {% if reached %}active{% endif %}">
+			{% if candidate.photo %}
+			{% thumbnail candidate.photo "300x300" crop="center" as im %}
+			<a href="{% url 'profil_view' slug=candidate.slug %}"><img src="{{im.url}}" alt="{{ candidate.name }}" class="profile-picture normal"></a>
+			{% endthumbnail %}
+			{% else %}
+			<a href="{% url 'profil_view' slug=candidate.slug %}"><img src="/static/img/default-profile-picture.png" alt="depute" class="profile-picture normal"></a>
+			{% endif %}
+			<div class="status"></div>
+		</div>
+		<div class="bio compact">
+		{% if LANGUAGE_CODE == 'fr' %}
+			<h3><a href="{% url 'profil_view' slug=candidate.slug %}">{{ candidate.name }}</a></h3>
+			{% for obj_background in background %}
+				<p>{% r_candidate_background candidate obj_background %}</p>
+			{% endfor %}
+		{% else %}
+			<h3><a href="{% url 'profil_view' slug=candidate.slug %}">{% r_candidate_background candidate background_name %}</a></h3>
+			{% for obj_background in background|slice:":3" %}
+				<p>{% r_candidate_background candidate obj_background %}</p>
+			{% endfor %}
+		{% endif %}
+		</div>
+	</div>
+	{% endwith %}
+	{% endfor %}
+</div>			
+{% paginate %}
+{% else %}
+{% if msg %}
+<div class="message error"><span>
+{% trans "Veuillez remplir correctement les champs" %} {% if nom_error %}{{nom_error}}{% endif %}
+</span>
+</div>
+{% endif %}
+{% trans "Aucun résultat ne correspond à votre recherche" %}
+{% endif %}
+

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% load votainteligente_extras %}
+
+
+{% block othercss %}
+	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+	<style>
+</style>
+{% endblock othercss %}
+
+
+{% block content %}
+<div id="page">
+    <div class="main full">
+    <h2><i class="icon-warning-sign icon-2x"></i> {% trans "Erreur" %}</h2>
+    <p>{% trans "La page demandée n'existe pas" %}</p> <p>{% trans "recommencer à nouveau par" %} <a href="/">{% trans "la page principale." %}</a></p>
+	</div>
+</div>
+
+{% endblock content %}
+

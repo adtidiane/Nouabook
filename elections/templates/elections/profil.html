@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% load votainteligente_extras %}
+{% load candideitorg_templetags %}
+
+{% block title %}
+{% if LANGUAGE_CODE == 'fr' %}
+{{ candidate.name }} | {% trans "Avez-vous une question à lui poser?" %}
+{% else %}
+{% r_candidate_background candidate name_background_pers %} | {% trans "Avez-vous une question à lui poser?" %}
+{% endif %}
+{% endblock title %}
+
+{% block othercss %}
+<style>
+.pagination ul li span.active {
+    background: none repeat scroll 0 0 #e66d27;
+    border: 1px solid #d5ded9;
+    border-radius: 0.1875em;
+    color: #000;
+    font-size: 0.875em;
+    padding: 0.25em 0.809em;
+    transition: all 0.2s ease-in-out 0s;
+}
+</style>
+{% endblock othercss %}
+
+{% block fb_og %}        
+	<meta property="og:title" content="{{ 'title'|ogpdata }}">
+	<meta property="og:type" content="{{ 'type'|ogpdata }}">
+	<meta property="og:description" content="{% trans 'Communiquez en ligne avec vos député-es' %}">
+	<meta property="og:url" content="http://nouabook.ma{% url 'profil_view' candidate.slug %}">
+	{% if candidate.photo %}
+	{% thumbnail candidate.photo "300x300" crop="center" as im %}
+	<meta property="og:image" content="{{ im.url }}" />
+	{% endthumbnail %}
+	{% else %} 
+	<meta property="og:image" content="http://nouabook.ma/static/img/nouabook-logo.png"> 
+	{% endif %}	       
+{% endblock fb_og %}
+
+{% block pack_lang %}
+	{% include "elections/langage_html.html" with redirect_to="/profil/"|add:candidate.slug %}
+{% endblock pack_lang %}
+
+{% block content %}
+{% with reached=candidate.relation.reachable %}
+<div id="profile">
+	<div class="outer-wrapper">
+		<div class="inner-wrapper">
+			<div class="profile-wrapper">
+				<div class="mp profile">
+					<div class="entry">
+						<div class="profile-picture-wrapper {% if reached %}active{% endif %}">
+						{% if candidate.photo %}
+						{% thumbnail candidate.photo "300x300" crop="center" as im %}
+							<img src="{{im.url}}" alt="{{ candidate.name }} photo" class="profile-picture medium"><div class="status"></div>
+						{% endthumbnail %}
+						{% else %}
+							<img src="/static/img/default-profile-picture.png" alt="depute photo" class="profile-picture medium"><div class="status"></div>
+						{% endif %}
+						</div>
+						
+						<div class="social">
+						{% for link in candidate.link_set.all %}
+							{% if link.name == "Facebook" %}
+							<a class="icn icn-facebook" href="{{link.url}}" target="_blank" ></a>
+							{% endif %}
+							{% if link.name == "Twitter" %}
+							<a class="icn icn-twitter" href="{{link.url}}" target="_blank"></a>
+							{% endif %}
+						{% endfor %}
+						</div>
+						
+						{% if LANGUAGE_CODE == 'fr' %}
+						<h3>{{ candidate.name }}</h3>
+						{% else %}
+						<h3>{% r_candidate_background candidate name_background_pers %}</h3> 
+						{% endif %}
+						
+						{% for background_category in background_categories %}
+						<h4>{{ background_category.name }}</h4>
+						{% for background in background_category.background_set.all|order_by:'id' %}
+						<p><strong>{{ background.name }} : </strong>{% r_candidate_background candidate background %}</p>
+						{% endfor %}
+						<hr class="clearfix">
+						{% endfor %}
+						
+						{% if LANGUAGE_CODE == 'fr' %}
+						<h4>{% trans "Informations personnelles" %}</h4>
+						{% for personal_data in personal_datas %}
+						<p><strong>{{ personal_data.label }} : </strong>{% r_personal_data_candidate candidate personal_data %} </p>
+						{% endfor %}
+						{% else %}						
+						<h4>{% trans "Informations personnelles" %}</h4>
+						{% for personal_background in personal_data_ar|slice:"1:" %}
+						<p><strong>{{ personal_background.name }} : </strong>{% r_candidate_background candidate personal_background %}</p>
+						{% endfor %}
+						{% endif %}
+						<hr class="clearfix">
+						
+						{% if reached %}<a href="{% url 'posez_view' candidate.id %}" class="button">{% trans "Posez votre question" %}</a>{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="tabs" id="questions">
+	<div class="outer-wrapper">
+		<div class="inner-wrapper">
+			<h2>{% trans "Vos questions" %}</h2>
+			<div class="tab" id="qa">
+				{% include "elections/profil_question.html" with messagesprofil=writeitmessages %}					
+			</div>                         
+		</div>
+	</div>
+</div>
+{% endwith %}
+{% endblock content %}
+
+{% block otherjs %}
+<script>
+	jQuery(function($){
+		//Binding event
+		$(document).on('click','.pagination a', function(evt){ 
+			evt.preventDefault(); scroller(); 
+			$('#qa').html('<div class="thread"><p class="notice">{% trans "Chargement en cours" %} . . .</p></div>');					
+			rest_lien=$(this).attr('href');
+			if(rest_lien.indexOf('depute=') == -1)
+			{rest_lien = rest_lien + '&depute={{ candidate.id }}';}
+			else if(rest_lien.indexOf('&depute={{ candidate.id }}') == -1)
+			{rest_lien = rest_lien.replace(/depute=(\w+)$/,'depute={{ candidate.id }}');}
+			
+			$.get('{% url "profil_question_ajax" %}'+rest_lien,function(le_html){
+				$('#qa').html(le_html);
+			}).fail(function(){
+				console.log('fail');
+			});
+		}); 
+			
+		$(document).on('click', 'a.voter',function(evt){ evt.preventDefault();
+			question_voter($(this),'{% url "votedirect" %}');						
+		});
+				
+		$(document).on('click', 'a.rvoter',function(evt){ evt.preventDefault();
+			answer_voter($(this),'{% url "votedirect" %}');						
+		});
+				
+
+		var scroller = function(){
+			$('html, body').animate({
+				scrollTop: $('#qa').offset().top
+			});
+		};
+		
+		//change twitter
+		var link_tweet = $('#profile .social .icn-twitter:first');
+		if(link_tweet.length){
+			href_tweet = link_tweet.attr('href');
+			if(/^@/.test(href_tweet))
+			link_tweet.attr('href', 'http://twitter.com/'+href_tweet)
+		}
+	});
+</script>
+{% endblock otherjs %}

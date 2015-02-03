@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load i18n %}
+{% load flatpages_i18n %}
+{% load votainteligente_extras %}
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" prefix="og: http://ogp.me/ns/{{ 'type'|ogpdata }}#"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" prefix="og: http://ogp.me/ns/{{ 'type'|ogpdata }}#"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" prefix="og: http://ogp.me/ns/{{ 'type'|ogpdata }}#"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" prefix="og: http://ogp.me/ns/{{ 'type'|ogpdata }}#"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>{% block title %}{% trans 'Nouabook.ma' %}{% endblock title %}</title>
+        {% block tag_description %}
+        <meta name="description" content="{{ 'description'|metadata }}">
+		{% endblock tag_description %}
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="{% trans 'Parlement, politique, Maroc, Benkirane, gouvernement, opposition' %}">
+		{% if LANGUAGE_CODE == 'fr' %}
+        <link rel="stylesheet" href="/static/css/nouabook.min.css">
+		{% else %}
+		<link rel="stylesheet" href="/static/css/nouabook-ar.min.css">
+		{% endif %}
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+		<style>
+			ul.ui-autocomplete{z-index:3000; height:auto; max-height:300px; overflow:auto; width:13%; border-color:#3a4d50; top: 38px;}
+			li.ui-menu-item{border-bottom: 1px solid #A3A3A3;}
+			/*li.ui-menu-item a:hover*/.ui-menu .ui-menu-item a.ui-state-focus, .ui-menu .ui-menu-item a.ui-state-active  {background: none repeat scroll 0 0 #d5ded9;}
+			li.ui-menu-item a.ui-corner-all{font-size:0.7em !important; font-family: Lato,"Helvetica Neue",Helvetica,Roboto,Arial,sans-serif !important;}			
+		</style>
+		{% block othercss %}{% endblock othercss %}
+		<link rel="shortcut icon" href="/static/img/favicon.png">
+		{% block fb_og %}
+        <!--for facebook fans-->
+        <meta property="og:title" content="{{ 'title'|ogpdata }}">
+        <meta property="og:type" content="{{ 'type'|ogpdata }}">
+        <meta property="og:description" content="{% trans 'Communiquez en ligne avec vos député-es' %}">
+        <meta property="og:url" content="http://nouabook.ma{% url 'home3_view' %}">
+        <meta property="og:image" content="http://nouabook.ma/static/img/nouabook-logo.png">	
+        <!--eoff-->
+		{% endblock fb_og %}
+		{% block fb_init %}{% endblock fb_init %}
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">Votre navigateur est <strong>vieux</strong>. Nous vous suggérons de le <a href="http://browsehappy.com/">mettre à jour</a> pour améliorer votre expérience.</p>
+        <![endif]-->
+
+        <header>
+            <nav id="top">
+                <ul>
+                    <li class="newsletter">
+                        <a href="#newsletter">{% trans "Abonnez-vous à la newsletter" %}</a>
+                    </li>
+                    <li>
+                        <form onsubmit="return false">
+                            <input type="text" class="search" data-alternate-placeholder="{% trans 'Trouvez vos député-es' %}" placeholder="{% trans 'Recherche' %}" id="txt">
+                            <!--<input type="submit" value="Okay">-->
+                        </form>
+                    </li>
+					{% block pack_lang %}
+					<li class="lang">
+                        <a href="#">عربي</a>
+                    </li>
+					{% endblock pack_lang %}
+                    <li class="social">
+                        <a class="icn icn-youtube" href="https://www.youtube.com/channel/UC8qqERR5x0SWWzobvZgtyVg" target="_blank" title="{% trans 'Abonnez-vous à notre chaîne Youtube' %}"></a>
+                        <a class="icn icn-facebook" href="https://www.facebook.com/pages/Nouabook/233047956880046" title="{% trans 'Aimez notre page sur Facebook!' %}" target="_blank"></a>
+                        <a class="icn icn-twitter" href="https://twitter.com/nouabook" title="{% trans 'Suivez nous sur Twitter!' %}" target="_blank"></a>
+                    </li>
+                </ul>
+            </nav>
+            <nav id="main">
+                <a href="{% url 'home3_view'%}" id="logo">{% trans "Nouabook.ma" %}</a>
+                <ul>
+                    <li><a href="{% url 'depute_view' %}">{% trans "Vos député-es" %}</a></li>
+                    <li><a href="{% url 'question_view' %}">{% trans "Vos questions" %}</a></li>
+                    <li class="has-submenu">
+                        <a href="">{% trans "Comment ça marche" %}</a>
+                        <ul class="submenu">
+                            <li class="heading">
+                                <a href="">{% trans "Comment ça marche" %}</a>
+                            </li>
+                            <li><a href="/{{ LANGUAGE_CODE }}/page/le-site/">{% trans "Le site" %}</a></li>
+							<li><a href="/{{ LANGUAGE_CODE }}/page/le-parlement/">{% trans "Le parlement" %}</a></li>
+                            <li><a href="/{{ LANGUAGE_CODE }}/page/faq/">{% trans "FAQ" %}</a></li>
+							<li><a href="/{{ LANGUAGE_CODE }}/page/charte/">{% trans "Charte d'utilisation" %}</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/{{ LANGUAGE_CODE }}/page/partenaires/">{% trans "Partenaires" %}</a></li>
+                    <li><a href="http://blog.nouabook.ma">{% trans "Blog" %}</a></li>
+                    <li><a class="button" href="{% url 'posez_view' %}">{% trans "Posez votre question" %}</a></li>
+                </ul>
+				<a href="#" class="open-menu">{% trans "Menu" %}</i></a>
+            </nav>
+        </header>
+		<div id="content">
+			{% block content %}        
+			{% endblock content %}
+			<div id="newsletter">
+				<h2 class="alternate">{% trans "Abonnez-vous à notre newsletter" %}</h2>
+				<form action="//nouabook.us8.list-manage.com/subscribe/post?u=4263dd6d37b938a820ce6f35f&amp;id=8d9102b8ba" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+					<fieldset>
+						<input type="text" placeholder="{% trans 'Nom' %}" name="FNAME" class="name required" id="mce-FNAME" value="">
+						<input type="text" placeholder="{% trans 'votre@adresse.com' %}" name="EMAIL" class="email required email" id="mce-EMAIL" value="">
+						<input type="submit" value="{% trans "s'abonner" %}" class="button" id="mc-embedded-subscribe">
+					</fieldset>
+					<div style="position: absolute; left: -5000px;"><input type="text" name="b_4263dd6d37b938a820ce6f35f_8d9102b8ba" tabindex="-1" value=""></div>
+				</form>
+				<div id="mce-responses" class="clear">
+					<div class="response" id="mce-error-response" style="display:none"></div>
+					<div class="response" id="mce-success-response" style="display:none"></div>
+				</div> 
+			</div>
+		</div>
+        <footer>
+            <nav id="bottom">
+                <ul>
+                    <li><a href="/{{ LANGUAGE_CODE }}/page/a-propos/">{% trans "A propos" %}</a></li>
+                    <li><a href="/{{ LANGUAGE_CODE }}/page/presse/">{% trans "Presse" %}</a></li>
+                    <li><a href="/{{ LANGUAGE_CODE }}/page/plan-site/">{% trans "Plan du site" %}</a></li>
+                    <li><a href="/{{ LANGUAGE_CODE }}/page/mentions-legales/">{% trans "Mentions légales" %}</a></li>
+                    <li><a href="/{{ LANGUAGE_CODE }}/page/contact/">{% trans "Contact" %}</a></li>
+                </ul>
+            </nav>
+            <div id="owner">
+                <h4>{% trans "Un projet de" %}</h4>
+                <img src="/static/img/simsim.jpg" alt="">
+            </div>
+            <div id="sponsors">
+                <h4>{% trans "Sponsors" %}</h4>
+                <img src="/static/img/european.jpg" alt="">
+                <img src="/static/img/indigo.jpg" alt="">
+            </div>
+            <div id="builders">
+                <h4>{% trans "Développé par" %}</h4>
+                <img src="/static/img/software.jpg" alt="">
+                <h4>{% trans "Designed by" %}</h4>
+                <img src="/static/img/synergie.jpg" alt="">
+            </div>
+            <div id="license">
+                <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="{% trans 'Licence Creative Commons' %}" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Nouabook.ma</span> {% trans "de" %} <a xmlns:cc="http://creativecommons.org/ns#" href="http://www.simsim.ma" property="cc:attributionName" rel="cc:attributionURL">{% trans "SimSim-Participation Citoyenne" %}</a> {% trans "est mis à disposition selon les termes de la" %} <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">{% trans "licence Creative Commons Attribution 4.0 International" %}</a>.
+            </div>
+        </footer>
+
+        <script src="/static/js/nouabook.min.js"></script>
+		<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+		<script>
+			jQuery(function($){
+				$('a[href="#newsletter"]').on('click', function(evt){
+					evt.preventDefault();
+					$('html, body').animate({
+						scrollTop: $('#newsletter').offset().top
+					},1000);
+					$('input[class*="name"]').focus();
+				});
+				
+				$('li.social a').tipsy();
+			});
+		</script>
+		{% block main_js %}
+		<script src="/static/js/main.princ.js"></script>
+		<script>
+			search_autocomplete({
+				parti:'{%trans "Parti"%}', 
+				circonscription:'{%trans "Circonscription"%}',
+				commission:'{%trans "Commission"%}'
+				}, '{% url "candidate_ajax" %}');
+		</script>
+		{% endblock main_js %}
+		{% block otherjs %}{% endblock otherjs %}
+		{% block fb_load %}
+		<div id="fb-root"></div>
+		<script>
+			  (function(d, s, id){
+			 var js, fjs = d.getElementsByTagName(s)[0];
+			 if (d.getElementById(id)) {return;}
+			 js = d.createElement(s); js.id = id;
+			 {% if LANGUAGE_CODE == 'fr' %}
+			 js.src = "//connect.facebook.net/fr_FR/sdk.js";
+			 {% else %}
+			 js.src = "//connect.facebook.net/ar_AR/sdk.js";
+			 {% endif %}
+			 fjs.parentNode.insertBefore(js, fjs);
+		   }(document, 'script', 'facebook-jssdk'));
+		</script>
+		{% endblock fb_load %}
+
+        <!-- Google Analytics -->
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			  
+            ga('create', '{{ 'code'|ga }}', 'auto');
+			ga('require', 'displayfeatures');
+			ga('send', 'pageview');
+        </script>
+    </body>
+</html>

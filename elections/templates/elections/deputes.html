@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{% trans "Parlement Marocain: Qui sont mes députés et députées? | Nouabook.ma" %}{% endblock %}
+
+{% block tag_description %}
+<meta name="description" content="{% trans 'Faites votre recherche sur la liste des partis suivant : PJD, PPS, RNI, PAM, Istiqlal, USFP, Mouvement populaire, Union Constitutionelle' %}"> 
+{% endblock tag_description %}
+
+{% block othercss %}
+<link rel="stylesheet" media="all" href="/static/css/chosen.min.css" />
+<style>
+.pagination ul li span.active {
+    background: none repeat scroll 0 0 #e66d27;
+    border: 1px solid #d5ded9;
+    border-radius: 0.1875em;
+    color: #000;
+    font-size: 0.875em;
+    padding: 0.25em 0.809em;
+    transition: all 0.2s ease-in-out 0s;
+}
+div.except{margin-bottom:0 !important;}
+div[class*="chosen-container"]{margin-bottom:1.1em;} .chosen-container .chosen-results{max-height:150px !important;}
+.chosen-container-single .chosen-single{height:30px;}
+</style>
+{% endblock othercss %}
+
+{% block pack_lang %}
+	{% include "elections/langage_html.html" with redirect_to="/deputes" %}
+{% endblock pack_lang %}
+
+{% block content %} 
+<div id="mps" class="single">
+	<div class="outer-wrapper">
+		<div class="inner-wrapper">
+			<div class="legend">
+				{% trans "Légende" %} : 
+				<div class="active"><div class="status"></div> {% trans "Actif" %}</div>
+				<div class="inactive"><div class="status"></div> {% trans "Non actif" %}</div>
+			</div>
+			<h2>{% trans "Vos député-es" %}</h2>
+			<form method="get" action="{% url 'depute_view' %}" id="search_form" class="compact">
+				{% csrf_token %} {{ form.s }}
+				<fieldset>
+					<div class="input_wrapper except">
+						<label for="input-name">{% trans "Nom du/de la député" %}</label>
+					</div>
+					{{ form.nom_depute }} {{ nom_error }}
+					<div class="input_wrapper"></div>
+					<div class="input_group">
+						<div class="input_wrapper">
+							<label>{% trans "Parti politique" %}</label>
+							{{ form.parti_politique }}
+						</div>
+						<div class="input_wrapper">
+							<label>{% trans "Circonscription" %}</label>
+							{{ form.circonscription }}
+						</div>    
+					</div>
+					<div class="input_group">
+						<div class="input_wrapper">
+							<label>{% trans "Prefecture ou province" %}</label>
+							{{ form.pref_or_prov }}
+						</div>
+						<div class="input_wrapper">
+							<label>{% trans "Commission" %}</label>
+							{{ form.commission }}
+						</div>
+					</div>
+					<div class="input_wrapper submit clearfix">
+						<input type="submit" class="button" value="{% trans 'Rechercher' %}">
+					</div>
+				</fieldset>
+			</form>
+			<hr class="cleafix">
+			<div id="content-mp-list">
+				{% include "elections/depute_html.html" %}
+			</div>
+			
+		</div>
+	</div>
+</div>
+{% endblock content %}
+
+{% block otherjs %}
+<script src="/static/js/vendor/chosen.jquery.min.js"></script>
+<script>
+	jQuery(function($){
+		$('#search_form').on('submit',function(e){
+			$('#content-mp-list').html('{% trans "Chargement en cours" %} ...');
+			e.preventDefault(); var ce_form=$(this); 
+			$.ajax({
+				url: ce_form.attr('action'),
+				type:ce_form.attr('method'),
+				data: ce_form.serialize(),
+				success: function(le_html){
+					$('#content-mp-list').html(le_html);
+					equalheight('.single .mp');
+				}
+			}).fail(function(){console.log('fail');});
+		});
+				
+			
+		$(document).on('click','.pagination a',function(evt){
+			scroller();
+			$('#content-mp-list').html('{% trans "Chargement en cours" %} ...');
+			evt.preventDefault(); 
+			var rest_lien = $(this).attr('href'); 
+			
+			$.get('{% url "depute_view" %}'+rest_lien,function(le_html){
+				$('#content-mp-list').html(le_html); equalheight('.single .mp');
+			}).fail(function(){
+				console.log('fail');
+			});
+			
+		});
+			
+		var scroller= function(){$('body, html').animate({
+			scrollTop: $('#content-mp-list').offset().top
+		});
+		};
+		
+		$('#id_nom_depute').attr('placeholder', '{% trans "votre député-e" %}');
+		
+		$('.chosen-select').chosen({
+			allow_single_deselect : true,
+			placeholder_text_single: '{% trans "votre député-e" %}',
+			no_results_text : '{% trans "Aucun résultat ne correspond à votre recherche" %}',
+			search_contains : true,
+		});
+	
+	});
+</script>
+{% endblock otherjs %}
+            

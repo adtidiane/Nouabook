@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load flatpages_i18n %}
+
+{% block title %}{{ flatpage.title }}{% endblock title %}
+
+{% block pack_lang %}
+	{% include "flatpages/langage_static_html.html" with redirect_to=flatpage.url %}
+{% endblock pack_lang %}
+
+
+{% block content %}
+<div id="page">
+	<div class="sidebar">
+		<nav>
+			<ul>
+				<li><a href="/{{ LANGUAGE_CODE }}/page/le-parlement/">{% trans "Le parlement" %}</a></li>
+				<li><a href="/{{ LANGUAGE_CODE }}/page/le-site/">{% trans "Le site" %}</a></li>
+				<li class="active"><a href="#">{% trans "FAQ" %}</a></li>
+				<li><a href="/{{ LANGUAGE_CODE }}/page/charte/">{% trans "Charte d'utilisation" %}</a></li>
+			</ul>
+		</nav>
+	</div>
+	<div class="main">
+		{{ flatpage.content }}
+	</div>
+</div>
+{% endblock content %}    
+

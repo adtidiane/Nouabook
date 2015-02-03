@@ -1,0 +1,14 @@
+{% load i18n %}
+
+<form action="/i18n/setlang/" method="post" id="form_language">
+    {% csrf_token %}
+    <input name="next" type="hidden" value="{{ redirect_to }}" />
+	<input type="hidden" name="language" value="" />
+	
+	{% if LANGUAGE_CODE == 'fr' %}
+	<li class="lang"><a href="" class="a_lang" id="lang_ar">عربي</a></li>
+	{% else %}
+	<li class="lang"><a href="" class="a_lang" id="lang_fr">Français</a></li>
+	{% endif %}
+
+</form>

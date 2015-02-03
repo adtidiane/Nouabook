@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{{ flatpage.title }}{% endblock title %}
+
+{% block pack_lang %}
+	{% include "flatpages/langage_static_html.html" with redirect_to=flatpage.url %}
+{% endblock pack_lang %}
+
+
+{% block content %}
+<div id="page">
+	
+	<div class="main full">
+		{{ flatpage.content }}		
+	</div>
+</div>
+{% endblock content %}
+            

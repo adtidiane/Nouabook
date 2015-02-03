@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{% trans "Questions des citoyens aux députés | Nouabook.ma" %}{% endblock title%}
+
+{% block othercss %}
+<style>
+.pagination ul li span.active {
+    background: none repeat scroll 0 0 #e66d27;
+    border: 1px solid #d5ded9;
+    border-radius: 0.1875em;
+    color: #000;
+    font-size: 0.875em;
+    padding: 0.25em 0.809em;
+    transition: all 0.2s ease-in-out 0s;
+}
+</style>
+{% endblock othercss %}
+
+
+{% block pack_lang %}
+	{% include "elections/langage_html.html" with redirect_to="/questions" %}
+{% endblock pack_lang %} 
+
+{% block content %}
+
+<div class="tabs" id="questions">
+	<div class="outer-wrapper">
+		<div class="inner-wrapper">
+			{% if message_done %}
+			<div class="message success"><span>{% trans "Félicitations! Votre question a bien été enregistrée. Si celle-ci est conforme à la charte d’utilisation de Nouabook.ma, elle sera publiée aussitôt sur le site!" %}</span></div>
+			{% endif %}
+			<h2>{% trans "Vos questions" %}</h2>
+			<nav class="tab-controls">
+				<ul>
+					<li class="active"><a href="#qa" title="{% trans 'Consultez les questions qui ont reçu des réponses!' %}">{% trans "Questions - réponses" %}</a> / </li>
+					<li><a href="#recent" title="{% trans 'Consultez les questions qui ont récemment été publiées!' %}">{% trans "Récentes" %}</a> / </li>
+					<li><a href="#popular" title="{% trans 'Consultez les questions les plus populaires sur le site!' %}">{% trans "Les plus votées" %}</a></li>
+				</ul>
+			</nav>
+			<div class="tab" id="qa">
+				{% include "elections/question_html.html" with the_qa=writeitmessages %}
+			</div>
+			<div class="tab" id="recent">
+				{% include "elections/question_html.html" with recents=questions %}
+			</div>
+			<div class="tab" id="popular">
+				{% include "elections/question_html.html" with populars=top_vote %}
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock content %}
+
+{% block otherjs %}
+<script>
+	jQuery(function($){
+		var tab_lien="#qa";
+		$('.tab-controls').on('click', 'li > a', function() {
+			tab_lien=$(this).attr('href');
+			$(tab_lien).html('<div class="thread"><p class="notice">{% trans "Chargement en cours" %} . . .</p></div>');
+			ajax_exec('?page=1',false);
+		});
+		 
+		//pagination
+		var ajax_exec = function(l,t){
+			if(t === false){ 
+				$.get('{% url "question_ajax" %}'+l+"&genre="+encodeURIComponent(tab_lien), function(the_html){
+						$(tab_lien).html(the_html);
+					}).fail(function(){console.log('fail');});
+			}
+			else
+			{   
+				$.get('{% url "question_ajax" %}'+l, function(the_html){
+						$(tab_lien).html(the_html);
+					}).fail(function(){console.log('fail');});
+			}
+		};
+		
+		
+		//Binding event
+		$(document).on('click','.pagination a', function(evt){ 
+			evt.preventDefault(); scroller(); 
+			$(tab_lien).html('<div class="thread"><p class="notice">Chargement . . .</p></div>');					
+			link=$(this).attr('href');
+			if(link.indexOf('genre=') != -1) ajax_exec(link,true); 
+			else ajax_exec(link,false);
+		}); 
+			
+		$(document).on('click', 'a.voter',function(evt){ evt.preventDefault();
+			question_voter($(this),'{% url "votedirect" %}');						
+		});
+				
+		$(document).on('click', 'a.rvoter',function(evt){ evt.preventDefault();
+			answer_voter($(this),'{% url "votedirect" %}');						
+		});
+				
+
+		var scroller = function(){
+			$('html, body').animate({
+				scrollTop: $(tab_lien).offset().top
+			});
+		};
+		
+		{% if message_done %}
+		$(window).load(function(){
+			$('.success').delay(7000).slideUp();
+			window.history.pushState({foo: 'bar'},"questions","{% url 'question_view' %}");
+		});
+		{% endif %}
+		
+	});
+	
+	
+</script>
+{% endblock otherjs %}
