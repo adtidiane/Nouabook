@@ -52,15 +52,13 @@
 						<label for="id_subject">{% trans "Sujet" %}</label>
 						<input type="text" placeholder="{% trans "Exemple: l'accès aux soins médicaux" %}" id="id_subject" name="subject">
 					</div>
-					{% comment %}
-					<div class="input_wrapper">					
-						<input id="id_is_video" type="checkbox" name="is_video"> {% trans "Message video" %}
-					</div>
-					{% endcomment %}
+					
 					<div class="input_wrapper">
 						<label for="id_content">{% trans "Message" %}</label>
+						<input type="checkbox" id="id_is_video" name="is_video">
+						<span class="expli_video" title="{% trans 'Cochez la case pour partager le lien de la vidéo' %}">{% trans "Partagez un message vidéo via YouTube" %}</span>
 						<textarea name="content" id="id_content" cols="30" rows="10"></textarea>
-						{% comment %}<input type="url" placeholder="http://youtu.be/67snP40mO2w" id="message_video">{% endcomment %}
+						<input type="url" placeholder="https://www.youtube.com/watch?v=aYWdpIdjqVQ ou https://youtu.be/aYWdpIdjqVQ" class="expli_video" id="message_video" title="{% trans 'Publiez votre vidéo sur YoutTube et partagez le lien ici' %}">
 					</div>
 					<div class="input_wrapper">
 						<label for="id_author_name">{% trans "Nom complet" %}</label>
@@ -75,8 +73,9 @@
 						<input type="text" placeholder="{% trans 'Votre adresse email' %}" id="id_author_email" name="author_email">
 					</div>
 					<div class="input_wrapper checkboxes">
-						<div class="checkbox">
-							<input type="checkbox" value="1" id="charte_lu" checked> {% trans "J'ai lu et approuvé la charte d'utilisation" %}
+						<div class="checkbox"> {% trans "charte d'utilisation" as la_charte %}
+							<input type="checkbox" value="1" id="charte_lu" checked>
+							{% blocktrans %}J'ai lu et approuvé la <a href="/{{ LANGUAGE_CODE }}/page/charte/" target="_blank">{{ la_charte }}</a>{% endblocktrans %}
 						</div>
 						<div class="checkbox facebook-checkbox">
 						{% comment %}<input type="hidden" value="0" name="fbshared" /> {% endcomment %}
@@ -117,10 +116,7 @@
 {% block otherjs %}
 	<script src="/static/js/vendor/chosen.jquery.min.js"></script>
 	<script src="/static/js/modal.js"></script>
-	<script src="/static/js/ask.mp2.js"></script>
-	<!-- the ask.mp2.js script file is responsible 
-	to share question facebook and send it to the plateforme at the same time.
-	-->
+	<script src="/static/js/ask.mp3.js"></script>
 	<script>
 		jQuery(function($){
 			$('#id_people').attr('placeholder', '{% trans "votre député-e" %}');
@@ -144,6 +140,9 @@
 				invalid_email: '{% trans "Veuillez saisir une adresse e-mail valide" %}',
 				invalid_champ: '{% trans "IMPORTANT! Merci de réviser le contenu du formulaire que vous tentez de soumettre et de vous assurer que toutes les cases sont renseignées" %}'
 			});
+			do_check_url('{% trans "Veuillez entrer un lien YouTube valable <br /> (décochez la case si vous ne voulez pas envoyer de message via YouTube)." %}');
+			
+			$('.expli_video').tipsy({gravity:'w'});
 		});
 	</script>
 {% endblock otherjs %}

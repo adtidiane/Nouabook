@@ -106,7 +106,7 @@ class QuestionFormV2(ModelForm):
 
     class Meta:
         model = VotaInteligenteMessage
-        fields = ('author_name', 'author_email', 'subject', 'content','people','fbshared','author_ville')
+        fields = ('author_name', 'author_email', 'subject', 'content','people','fbshared','author_ville','is_video')
         """widgets = {
             'people': SelectMultiple(attrs={'class':'chosen-select', 'style':'width:100%;'})
         }"""
@@ -171,6 +171,8 @@ class DeputeSearchForm(forms.Form):
     def __init__(self, *args, **kwargs):
         lg=get_language()
         super(DeputeSearchForm, self).__init__(*args, **kwargs)
+        """self.fields['nom_depute'].error_messages={'min_length':_(u'Saisissez les 3 premières lettres du nom'),}
+        self.fields['nom_depute'].widget = forms.TextInput(attrs={'placeholder':_(u'Saisissez les 3 premières lettres du nom'),})"""
         if lg == 'ar':
             self.fields['parti_politique'].choices=self.my_choices_ar(10)
             self.fields['circonscription'].choices=self.my_choices_ar(11)

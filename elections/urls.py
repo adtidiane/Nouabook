@@ -4,15 +4,12 @@ from django.views.generic import TemplateView
 from haystack.views import SearchView
 from elections.forms import ElectionForm
 from django.views.generic import DetailView
-from elections.views import ElectionsSearchByTagView, HomeView, ElectionDetailView,\
-							CandidateDetailView, SoulMateDetailView, ElectionAskCreateView,\
-							AnswerWebHook, ElectionRankingView, QuestionsPerCandidateView, MessageDetailView, FaceToFaceView,Home3View
 from elections.models import VotaInteligenteMessage
 from sitemaps import *
 
 from django.conf import settings
 from django.views.decorators.cache import cache_page
-from elections.views import ElectionQuestionView, ElectionPosezView,ProfilDetailView,MessageView
+from elections.views import AnswerWebHook,ElectionQuestionView, ElectionPosezView,ProfilDetailView,MessageView,Home3View
 
 media_root = getattr(settings, 'MEDIA_ROOT', '/') 
 

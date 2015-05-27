@@ -6,6 +6,13 @@
 
 {% block title%}{% trans "Parlement Marocain: posez vos questions aux députés | Nouabook.ma" %}{% endblock title %}
 
+{% block othercss %}
+	<style>
+		a.html5lightboxes img {display: block; margin-left: auto;margin-right: auto; margin-top: 2.5%; width: 45%}
+		#html5-text{direction: rtl; font-weight:bold; text-align: center;}
+	</style>
+{% endblock othercss %}
+
 {% block pack_lang %} 
   {% include "elections/langage_html.html" with redirect_to="/" %}
 {% endblock pack_lang %}
@@ -15,6 +22,7 @@
 	<div id="hero">
 		<h1>{% trans "Communiquez en ligne avec vos député-es" %}</h1>
 		<h2>{% trans "Adressez vos questions à vos député-es et recevez leurs réponses sur Nouabook.ma" %}</h2>
+		<a href="http://www.youtube.com/embed/0RcsWOVThbg?rel=0&amp;vq=hd1080" class="html5lightboxes" title="كيفية استعمال Nouabook.ma!"><img src="/static/img/Cover-for-Animated-Video.png" style=""></a>
 		<div id="features">
 			<ul>
 				<li class="feature-1">
@@ -126,7 +134,11 @@
 							<div class="entry">
 								<div class="profile-picture-wrapper"><img src="/static/img/default-profile-picture.png" alt="" class="profile-picture medium"></div>
 								<h3>{{ message.author_name }}</h3>
-								<p dir="auto">{{ message.content }}</p>
+								<p dir="auto">
+									{% filter linebreaksbr %}
+										{% display_content_type message.content 'question' %}
+									{% endfilter %}
+								</p>
 							</div>
 							<div class="actions">
 								{% with dept=message.people.all|first %}
@@ -182,7 +194,11 @@
 							<div class="entry">
 								<div class="profile-picture-wrapper"><img src="/static/img/default-profile-picture.png" alt="" class="profile-picture medium"></div>
 								<h3>{{ message.author_name }}</h3>
-								<p dir="auto">{{ message.content }}</p>
+								<p dir="auto">
+									{% filter linebreaksbr %}
+										{% display_content_type message.content 'question' %}
+									{% endfilter %}
+								</p>
 							</div>
 							<div class="actions">
 								{% with dept=message.people.all|first %}
@@ -216,7 +232,11 @@
 									<h3>{% r_candidate_background candidate background_name %}</h3>
 								{% endif %}
 							{% endwith %}
-								<p dir="auto">{{ answer.content|linebreaksbr }}</p>
+								<p dir="auto">
+									{% filter linebreaksbr %}
+										{% display_content_type answer.content 'reponse' %}
+									{% endfilter %}
+								</p>
 							</div>
 							<div class="actions">
 								{% with phrase=reponse_par|add:answer.person.name|add:sur %}
@@ -249,7 +269,11 @@
 							<div class="entry">
 								<div class="profile-picture-wrapper"><img src="/static/img/default-profile-picture.png" alt="" class="profile-picture medium"></div>
 								<h3>{{ message.author_name }}</h3>
-								<p dir="auto">{{ message.content }}</p>
+								<p dir="auto">
+									{% filter linebreaksbr %}
+										{% display_content_type message.content 'question' %}
+									{% endfilter %}
+								</p>
 							</div>
 							<div class="actions">
 								{% with dept=message.people.all|first %}
@@ -298,6 +322,7 @@
 {% endblock content %}
 
 {% block otherjs %}
+<script src="/static/js/vendor/html5lightbox/html5lightbox.js"></script>
 <script>
 	jQuery(function($){
 		$('a.voter').on('click', function(evt){ evt.preventDefault();
@@ -306,6 +331,11 @@
 				
 		$('a.rvoter').on('click', function(evt){ evt.preventDefault();
 			answer_voter($(this),'{% url "votedirect" %}');
+		});
+		
+		//video animation
+		$('.html5lightboxes').html5lightbox({
+			stamp: false,
 		});
 	});
 </script>

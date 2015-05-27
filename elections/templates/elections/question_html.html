@@ -25,7 +25,11 @@
 				<div class="entry">
 					<div class="profile-picture-wrapper"><img src="/static/img/default-profile-picture.png" alt="" class="profile-picture medium"></div>
 					<h3>{{ message.author_name }}</h3>
-					<p dir="auto">{{ message.content }}</p>
+					<p dir="auto">
+						{% filter linebreaksbr %}
+							{% display_content_type message.content 'question' %}
+						{% endfilter %}
+					</p>
 				</div>
 				<div class="actions">
 					{% with dept=message.people.all|first %}
@@ -59,7 +63,11 @@
 					<h3>{% r_candidate_background candidate background_name %}</h3>
 				{% endif %}
 				{% endwith %}
-					<p dir="auto">{{ answer.content|linebreaksbr }}</p>
+					<p dir="auto">
+						{% filter linebreaksbr %}
+							{% display_content_type answer.content 'reponse' %}
+						{% endfilter %}
+					</p>
 				</div>
 				<div class="actions">
 					{% with phrase=reponse_par|add:answer.person.name|add:sur %}
@@ -92,7 +100,11 @@
 				<div class="entry">
 					<div class="profile-picture-wrapper"><img src="/static/img/default-profile-picture.png" alt="" class="profile-picture medium"></div>
 					<h3>{{ message.author_name }}</h3>
-					<p dir="auto">{{ message.content }}</p>
+					<p dir="auto">
+						{% filter linebreaksbr %}
+							{% display_content_type message.content 'question' %}
+						{% endfilter %}
+					</p>
 				</div>
 				<div class="actions">
 					{% with dept=message.people.all|first %}
@@ -150,7 +162,11 @@
 				<div class="entry">
 					<div class="profile-picture-wrapper"><img src="/static/img/default-profile-picture.png" alt="" class="profile-picture medium"></div>
 					<h3>{{ message.author_name }}</h3>
-					<p dir="auto">{{ message.content }}</p>
+					<p dir="auto">
+						{% filter linebreaksbr %}
+							{% display_content_type message.content 'question' %}
+						{% endfilter %}
+					</p>
 				</div>
 				<div class="actions">
 					{% with dept=message.people.all|first %}

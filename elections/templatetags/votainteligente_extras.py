@@ -4,6 +4,7 @@ register = template.Library()
 
 from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
+from django.utils.html import escape
 from elections.models import Election
 import simplejson as json
 from django.conf import settings
@@ -173,3 +174,24 @@ def r_personal_data_candidate(candidate, personaldata):
 def order_by(queryset, args):
     args = [x.strip() for x in args.split(',')]
     return queryset.order_by(*args)
+	
+@register.simple_tag
+def display_content_type(content, type):
+    regex_question = re.compile(r"^http(s)?://youtu\.be/(?P<idyoutube>[^&]+)$")
+    regex_question1 = re.compile(r"^http(s)?://(www\.)?youtube\.com/watch\?v=(?P<idyoutube>[^&]+)(&.+)?$")
+    regex_reponse = re.compile(r"http(s)?://youtu\.be/(?P<idyoutube>[^&\s]+)")
+    regex_reponse1 = re.compile(r"http(s)?://(www\.)?youtube\.com/watch\?v=(?P<idyoutube>[^&\s]+)(&.+)?")
+    if type == 'question':
+        content = escape(content)
+        match_regex = regex_question.search(content)
+        match_regex1 = regex_question1.search(content)
+    else:
+        match_regex = regex_reponse.search(content)
+        match_regex1 = regex_reponse1.search(content)
+    #match_regex=re.search(regex, content)
+    if match_regex:
+        return '<iframe width="100%%" height="315" src="https://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>' % (match_regex.group('idyoutube'),)
+    elif match_regex1:
+        return '<iframe width="100%%" height="315" src="https://www.youtube.com/embed/%s" frameborder="0" allowfullscreen></iframe>' % (match_regex1.group('idyoutube'),)
+    else:
+        return content;

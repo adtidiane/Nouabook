@@ -119,7 +119,7 @@ class Home3View(TemplateView):
         context = super(Home3View, self).get_context_data(**kwargs)
         context['election'] = Election.objects.get(slug = "marruecos2014")
         context['writeitmessages'] = VotaInteligenteMessage.objects.filter(writeitinstance=context['election'].writeitinstance, moderated=True, answers__isnull = False).prefetch_related('answers').order_by('-answers__created')[:3]
-        context['questions'] = VotaInteligenteMessage.objects.filter(writeitinstance=context['election'].writeitinstance, answers__isnull= True, moderated=True).order_by('-moderated_at')[:5]
+        context['questions'] = VotaInteligenteMessage.objects.filter(writeitinstance=context['election'].writeitinstance, answers__isnull=True, moderated=True).order_by('-moderated_at')[:5]
         context['top_vote'] = VotaInteligenteMessage.objects.filter(writeitinstance=context['election'].writeitinstance, answers__isnull=True, moderated=True).order_by('-total_upvotes')[:5]
         lg=translation.get_language()
         if lg == 'fr':
@@ -223,6 +223,9 @@ class ElectionPosezView(CreateView):
             the_pk=self.kwargs['pk']
             par_defaut={'people':[the_pk,],}
         return par_defaut
+		
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
 	
 #MessageView
 class MessageView(DetailView):
@@ -248,6 +251,26 @@ class MessageView(DetailView):
             context['background_name'] = Background.objects.get(pk=19)
         return context
 
+
+import os
+from django.shortcuts import render
+from elections.encoder_csv import UnicodeWriter
+from elections.encoder_csv import UnicodeReader	
+def charger_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="newsletter.csv"' #/home/simsim/www/votainteligente-portal-electoral/elections/templates/
+    with open('/home/simsim/www/votainteligente-portal-electoral/elections/templates/newsletter.csv', 'rb') as csvfile:
+        """writer = csv.writer(csvfile)
+        writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
+        writer.writerow(['Second row', 'A', 'B', 'C', '"Testing"', "Here's a quote"])"""
+        reader = UnicodeReader(csvfile)
+        writer = UnicodeWriter(response)
+        writer.writerows(reader)
+    return response
+
+from django.utils import translation
+def welcome_translated(request):
+    return HttpResponse(translation.get_language())
 
 
 def deputesview(request):
@@ -321,7 +344,7 @@ def ajax_question_view(request):
         if request.GET['genre'] == '#qa':
             the_qa = VotaInteligenteMessage.objects.filter(writeitinstance=election.writeitinstance, moderated=True, answers__isnull = False).prefetch_related('answers').order_by('-answers__created')
         elif request.GET['genre'] == '#recent':
-            recents = VotaInteligenteMessage.objects.filter(writeitinstance=election.writeitinstance, answers__isnull= True, moderated=True).order_by('-moderated_at')
+            recents = VotaInteligenteMessage.objects.filter(writeitinstance=election.writeitinstance, answers__isnull=True, moderated=True).order_by('-moderated_at')
         elif request.GET['genre'] == '#popular':
             populars = VotaInteligenteMessage.objects.filter(writeitinstance=election.writeitinstance, answers__isnull=True, moderated=True).order_by('-total_upvotes')
         else:
@@ -347,4 +370,4 @@ def ajax_profil_question_view(request):
             message = mess_content
     else:
         message = mess_content
-    return render(request, 'elections/profil_question.html', locals())		
+    return render(request, 'elections/profil_question.html', locals())
