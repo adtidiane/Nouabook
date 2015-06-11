@@ -5,7 +5,7 @@ from haystack.views import SearchView
 from elections.forms import ElectionForm
 from django.views.generic import DetailView
 from elections.models import VotaInteligenteMessage
-from sitemaps import *
+#from sitemaps import *
 
 from django.conf import settings
 from django.views.decorators.cache import cache_page
@@ -15,10 +15,10 @@ media_root = getattr(settings, 'MEDIA_ROOT', '/')
 
 new_answer_endpoint = r"^new_answer/%s/?$" % (settings.NEW_ANSWER_ENDPOINT)
 
-sitemaps = {
+"""sitemaps = {
     'elections': ElectionsSitemap,
     'candidates': CandidatesSitemap,
-}
+}"""
 
 urlpatterns = patterns('',
 	url(new_answer_endpoint,AnswerWebHook.as_view(), name='new_answer_endpoint' ),
@@ -46,7 +46,7 @@ urlpatterns = patterns('',
     url(r'^questions_load/$', 'elections.views.ajax_question_view', name='question_ajax'),
     #profil question ajax
     url(r'^profil_questions_load/$', 'elections.views.ajax_profil_question_view', name='profil_question_ajax'),
-    url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
+    #url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
 )
 
 urlpatterns += patterns('', 

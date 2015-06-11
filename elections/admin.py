@@ -15,7 +15,6 @@ from elections.encoder_csv import UnicodeReader, UnicodeWriter
 from secretballot.models import Vote
 from django.core.urlresolvers import reverse
 
-
 class ElectionAdmin(admin.ModelAdmin):
     search_fields = ['name', 'tags']
 	
@@ -24,9 +23,8 @@ admin.site.register(Election, ElectionAdmin)
 class PageForm(FlatpageForm):
 
     class Meta:
-        model = FlatPage_i18n #FlatPage
+        model = FlatPage_i18n
         widgets = {
-            #'content' : TinyMCE(),
 		    'content_fr' : TinyMCE(),
             'content_ar' : TinyMCE(),
         }
@@ -70,16 +68,16 @@ class MensajesAdmin(admin.ModelAdmin):
     def status_moderation(self):
         html_return=""
         if(self.moderated):
-            html_return = '<span class="label label-default">'+u"moderée"+'</span>'
+            html_return = '<span class="label label-default">'+u"moderÃ©e"+'</span>'
         else:
-            html_return = '<span class="label label-warning">'+u"Non moderée"+'</span>'
+            html_return = '<span class="label label-warning">'+u"Non moderÃ©e"+'</span>'
         return format_html(html_return)
 
     #function for column pending or rejected status
     def pending_or_rejected(self):
         html_return = ""
         if(self.rejected_status):
-            html_return = '<span class="label label-important">'+u"rejetée"+'</span>'
+            html_return = '<span class="label label-important">'+u"rejetÃ©e"+'</span>'
         elif(self.pending_status):
             html_return = '<span class="label label-info">'+u"en attente"+'</span>'
         return format_html(html_return)
@@ -119,7 +117,7 @@ class MensajesAdmin(admin.ModelAdmin):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="stat_questions.csv"'
         writer = UnicodeWriter(response)
-        writer.writerow(['author_name','author_email', 'subject', 'content','author_ville', u'député', 'created date', 'number votes', 'moderated', u'shared facebook', 'has_response',\
+        writer.writerow(['author_name','author_email', 'subject', 'content','author_ville', u'dÃ©putÃ©', 'created date', 'number votes', 'moderated', u'shared facebook', 'has_response',\
 		u'response content','date response', 'duration response (days, H:M:S)'])
         for s in queryset:
             created_date = str(s.created);
@@ -140,7 +138,7 @@ class MensajesAdmin(admin.ModelAdmin):
             writer.writerow([s.author_name, s.author_email, s.subject, s.content, s.author_ville, depute[0].name, created_date, str(s.total_upvotes), str_moderated ,str_fbshared, has_answer,\
 			answer_content, answer_date, time_ms_answ]) 
         return response
-    charger_stat_csv.short_description = u"Télécharger sous format CSV"
+    charger_stat_csv.short_description = u"TÃ©lÃ©charger sous format CSV"
 
 admin.site.register(VotaInteligenteMessage, MensajesAdmin)
 
@@ -191,6 +189,6 @@ class VoteAdmin(admin.ModelAdmin):
                 v_subject = v.content_object.message.subject
             writer.writerow([v_vote,v_content_type, v_subject, v.token, v_updated_at])
         return response
-    charger_csv_vote.short_description = u"Télécharger sous format CSV"
+    charger_csv_vote.short_description = u"TÃ©lÃ©charger sous format CSV"
 
 admin.site.register(Vote, VoteAdmin)

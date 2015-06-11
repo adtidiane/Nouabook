@@ -7,11 +7,11 @@ So we reuse the explanation from Votainteligente in ciudadanointeligente/votaint
 
 #Installation
 
-VotaInteligente depends on 3 parts candideit.org, popit and write-it. You might choose to use all of them or just part. In the following document it is described how to install.
+Nouabook depends on 3 parts candideit.org, popit and write-it. You might choose to use all of them or just part. In the following document it is described how to install.
 
 ## Assumptions
 
-This guide was made using an ubuntu 13.10 just installed.(you can work with windows but it's better to use a linux system)
+This guide was made using an ubuntu.(you can work with windows but it's better to use a linux system)
 
 ## Requirements
 
@@ -26,20 +26,15 @@ Before the installation process is started a number of requirements is needed
 
 * Clone votainteligente somewhere in your system.
 
-`git clone https://github.com/ciudadanointeligente/votainteligente-portal-electoral.git`
+`git clone https://github.com/adtidiane/Nouabook.git`
 
 Enter the installation directory
 
-`cd votainteligente-portal-electoral`
+`cd Nouabook`
 
 * Create a virtual environment
 
-`mkvirtualenv votainteligente`
-
-Here you can optionally give the command the full path to the installation directory by adding -a <full_path>.
-* If you didn't use the -a option you'll have to cd into the directory.
-
-`cd votainteligente-portal-electoral`
+`mkvirtualenv nouabook_env`
 
 * Install the requirements that votainteligente needs in the current virtualenvironment
 
@@ -47,23 +42,35 @@ Here you can optionally give the command the full path to the installation direc
 
 It might take some time to get all installed
 
-NB: if installation of requirements are not successfull you need to install them one by one using 
+NB: if installation of requirements are not successfull you need to install them one by one.
 
-`example: pip install -r django-taggit`
+`example: pip install django-taggit`
 
 * Create the database and tables.
 
 `python manage.py syncdb`
 
-Update the tables with migrations
+Update the DB with migrations
 
 `python manage.py migrate`
+
+create the migrations for elections app
+
+`python manage.py schemamigration elections --initial`
+
+Update the DB with migrations for elections app
+
+`python manage.py migrate elections`
+
+* Update Database concerning flatpages_i18n
+
+You need to update the DB follow the instruction [here](https://github.com/PragmaticMates/django-flatpages-i18n#installation) at point 6.
 
 ## Bringing elections from candideit.org
 
 Elections in VotaInteligente have a one-to-one relation with elections in candideit.org, so for your installation you'll first need to create an election in [candideit.org](http://candideit.org) and follow the next steps.
 
-Specifically for this installation we are not using popit (But we'll soon be doing so).
+Specifically for this installation we are not using popit.
 
 * Create the file votainteligente/local_settings.py with the following content.
 
@@ -84,7 +91,7 @@ You need to run the following command
 
 `python manage.py update_from_candidator`
 
-* Running VotaInteligente
+* Running Nouabook
 
 `python manage.py runserver`
 
@@ -92,9 +99,9 @@ And hit http://localhost:8000/.
 
 ## Theming
 
-### Previously created themes
+### Created theme
 
-* [votainteligente-venezuela-theme](https://github.com/ciudadanointeligente/votainteligente-venezuela-theme) is the theme for [eligetucandidato.org](http://eligetucandidato.org/)
+The theme used is for [nouabook](http://nouabook.ma). you can use it and modify it.
 
 ### Creating your own custom theme or use the existing theme
 
