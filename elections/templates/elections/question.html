@@ -4,26 +4,12 @@
 
 {% block title %}{% trans "Questions des citoyens aux députés | Nouabook.ma" %}{% endblock title%}
 
-{% block othercss %}
-<style>
-.pagination ul li span.active {
-    background: none repeat scroll 0 0 #e66d27;
-    border: 1px solid #d5ded9;
-    border-radius: 0.1875em;
-    color: #000;
-    font-size: 0.875em;
-    padding: 0.25em 0.809em;
-    transition: all 0.2s ease-in-out 0s;
-}
-</style>
-{% endblock othercss %}
-
-
 {% block pack_lang %}
 	{% include "elections/langage_html.html" with redirect_to="/questions" %}
 {% endblock pack_lang %} 
 
 {% block content %}
+
 
 <div class="tabs" id="questions">
 	<div class="outer-wrapper">
@@ -39,6 +25,16 @@
 					<li><a href="#popular" title="{% trans 'Consultez les questions les plus populaires sur le site!' %}">{% trans "Les plus votées" %}</a></li>
 				</ul>
 			</nav>
+            <div class="filter">
+                <div class="input_wrapper">
+                    <select id="tags" name="tags">
+                        <option value="#">{% trans "Choisissez un thème" %}</option>
+                        {% for tag in tags %}
+                            <option value="{{ tag.id }}">{% trans tag.name %}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
 			<div class="tab" id="qa">
 				{% include "elections/question_html.html" with the_qa=writeitmessages %}
 			</div>
@@ -61,13 +57,13 @@
 		$('.tab-controls').on('click', 'li > a', function() {
 			tab_lien=$(this).attr('href');
 			$(tab_lien).html('<div class="thread"><p class="notice">{% trans "Chargement en cours" %} . . .</p></div>');
-			ajax_exec('?page=1',false);
+			ajax_exec('?page=1',false, tag);
 		});
 		 
 		//pagination
-		var ajax_exec = function(l,t){
+		var ajax_exec = function(l,t, tag){
 			if(t === false){ 
-				$.get('{% url "question_ajax" %}'+l+"&genre="+encodeURIComponent(tab_lien), function(the_html){
+				$.get('{% url "question_ajax" %}'+l+"&genre="+encodeURIComponent(tab_lien)+"&tag="+tag, function(the_html){
 						$(tab_lien).html(the_html);
 					}).fail(function(){console.log('fail');});
 			}
@@ -83,7 +79,7 @@
 		//Binding event
 		$(document).on('click','.pagination a', function(evt){ 
 			evt.preventDefault(); scroller(); 
-			$(tab_lien).html('<div class="thread"><p class="notice">Chargement . . .</p></div>');					
+			$(tab_lien).html('<div class="thread"><p class="notice">{% trans "Chargement en cours" %} . . .</p></div>');					
 			link=$(this).attr('href');
 			if(link.indexOf('genre=') != -1) ajax_exec(link,true); 
 			else ajax_exec(link,false);
@@ -100,7 +96,7 @@
 
 		var scroller = function(){
 			$('html, body').animate({
-				scrollTop: $(tab_lien).offset().top
+				scrollTop: $('#questions').offset().top
 			});
 		};
 		
@@ -110,7 +106,48 @@
 			window.history.pushState({foo: 'bar'},"questions","{% url 'question_view' %}");
 		});
 		{% endif %}
-		
+
+        var tag = ''
+        $("#tags").change(function () {
+            $( "select option:selected" ).each(function() {
+              tag = $( this).context.value;
+                console.log(tag);
+            });
+            //get_questions_by_tag(str);  // AJAX function call when sector is selected
+            ajax_exec('?page=1',false, tag);
+        });
+
+        function get_questions_by_tag(str){
+            /* $('#id_people').html('');  // Use to empty the select
+             $("#id_people").trigger("chosen:updated");*/
+           // console.log($('#id_people').html());
+            $.ajax({
+                type: "GET",
+                url: "/ajax_questions_tag",
+                data: { tag_id : str },
+                datatype: 'json',
+                success: function(result) {
+                    if (result) { console.log(result);
+                        // I usually receive a list of items here
+                        // I use this list to replace the dependant select
+
+                        $('#id_people').find('option').remove().end();  // Use to empty the select
+
+                        // Now we append the industry options we've received
+                        for(var i=0;i < result.item_list.length;i++){
+                            $('#id_people').append($('<option>', {
+                                value: result.item_list[i]['id'],
+                                text: result.item_list[i]['name']
+                        }));
+                        }
+                        $("#id_people").trigger("chosen:updated");
+
+                    } else {
+                        console.log('error');
+                    }
+                }
+            });
+        }
 	});
 	
 	

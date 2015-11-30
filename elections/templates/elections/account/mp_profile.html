@@ -1,0 +1,523 @@
+{% extends "base_backend_mp.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% load votainteligente_extras %}
+{% load candideitorg_templetags %}
+
+{% block title %}{% trans "Votre Profil | Nouabook.ma" %}{% endblock title %}
+
+{% block pack_lang %}
+    {% include "elections/langage_html.html" with redirect_to="/accounts/profile" %}
+{% endblock pack_lang %}
+
+
+{% block othercss %}
+ <link rel="stylesheet" media="all" href="/static/css/chosen.min.css" />
+ <style>
+	div[class*="chosen-container"]{ background-color: #fff; border: 2px solid #d5ded9; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) inset; box-sizing: border-box;
+    font-family: Lato,"Helvetica Neue",Helvetica,Roboto,Arial,sans-serif; font-size: 1em; margin-bottom: 0.75em; padding:0.5em; transition: border-color 0s ease 0s;
+    width: 100%;}
+	.chosen-container-multi .chosen-choices li.search-field input[type="text"]{ padding:0; border:0 none;}
+	.chosen-container-multi .chosen-choices, .chosen-container-active .chosen-choices {border: 0 !important; box-shadow:0 none !important;background-image:none;}
+	.chosen-choices li.search-field input[type="text"]{height:20px !important;}
+	.to_hide_default {display:none;}textarea {width: 30em;height: 4em;}
+    .container_button {margin:10px auto 0; max-width: 15em;}
+    .aside .profile-id { margin-bottom: 11em; }
+    {% if LANGUAGE_CODE == 'fr' %}
+    #ar {display: none;}
+    {% else %}
+    #fr {display: none;}
+    {% endif %}
+ </style>
+{% endblock othercss %}
+
+{% block content %}
+	<div id="account">
+    <form action="" method="post">
+                            {% csrf_token %}
+                        {{ form.non_field_errors }}
+        <div class="outer-wrapper">
+		    <div class="aside">
+                <div class="profile-id">
+                    <!-- SIDEBAR USERPIC -->
+                    <div class="profile-picture-wrapper">
+                        {% if candidate.photo %}
+                            <img src="{{ candidate.photo }}" alt="{{candidate.name}}" class="profile-picture large">
+                        {% else %}
+                            <img src="/static/img/default-profile-picture.png" alt="{{candidate.name}}" class="img-responsive" width="50px">
+                        {% endif %}
+                    </div>
+                    <a href="mailto:contact@nouabook.ma?Subject={{changer_photo|iriencode}}" target="_top">{% trans "Contactez-nous pour changer la photo" %}</a>
+                    <hr>
+                    <div class="fieldWrapper input_wrapper">
+                        <span class="fa-stack fa-lg icn-facebook">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <label for="{{ inlines.2.0.id_for_label }}">{% trans "Page facebook" %}</label>
+                        {{ inlines.2.0.hidden_fields.0 }}
+                        {{ inlines.2.0.hidden_fields.1 }}
+                        {{ inlines.2.0.errors }}
+                        {{ inlines.2.0.url }}
+                    </div>
+                    <div class="fieldWrapper input_wrapper">
+                        <span class="fa-stack fa-lg icn-twitter">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <label for="{{ inlines.2.1.id_for_label }}">{% trans "Compte twitter" %}</label>
+                        {{ inlines.2.1.hidden_fields.0 }}
+                        {{ inlines.2.1.hidden_fields.1 }}
+                        {{ inlines.2.1.errors }}
+                        {{ inlines.2.1.url }}
+                    </div>
+                    <div class="fieldWrapper input_wrapper">
+                        <span class="fa-stack fa-lg icn-youtube">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-youtube fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <label for="{{ inlines.2.2.id_for_label }}">{% trans "Profil youtube" %}</label>
+                        {{ inlines.2.2.hidden_fields.0 }}
+                        {{ inlines.2.2.hidden_fields.1 }}
+                        {{ inlines.2.2.errors }}
+                        {{ inlines.2.2.url }}
+                    </div>
+                    <div class="fieldWrapper input_wrapper">
+                        <span href="" class="fa-stack fa-lg icn-link">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-link fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <label for="{{ inlines.2.3.id_for_label }}">{% trans "Lien du site" %}</label>
+                        {{ inlines.2.3.hidden_fields.0 }}
+                        {{ inlines.2.3.hidden_fields.1 }}
+                        {{ inlines.2.3.errors }}
+                        {{ inlines.2.3.url }}
+                    </div>
+
+                    <hr>
+                    <h3>{% trans "Choisir vos thèmes" %}</h3>
+                    <Select data-placeholder="{% trans 'Choisir un ou pusieurs thèmes' %}..." multiple class="chosen-select input_wrapper input_action">
+                        {% for tag in tags %}
+                            <option value='{{ tag.id }}'
+                                    {% if tag.id in mp_tags %}
+                                        selected="selected"
+                                    {% endif %}
+                                    >{% trans tag.name %}</option>
+                        {% empty %}
+                            <option>{% trans "Aucun theme" %}</option>
+                        {% endfor %}
+                    </Select>
+                    <a id="saveTag" href="#" class="button button-small alternate">{% trans "Enregistrer" %}</a>
+                    <span id="result_tags"></span>
+                </div>
+		    </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <h3 class="panel-title">
+                        <a href="#fr" class="panel-click" attr-lang="fr">Français</a>
+                        /
+                        <a class="panel-click" attr-lang="ar" href="#ar">عربي</a>
+                    </h3>
+                </div>
+                <div class="panel-body" id="fr" style="direction: ltr">
+                        <div class="expander">
+                            <a href="#" class="expander-trigger">Informations électorales</a>
+                            <div class="expander-content">
+                                    <div id="block_changer_fr" class="to_hide_default" attr-lang="fr">
+                                        <label>{% trans "Changer le parti" %}</label>
+                                        <select class="changer_parti" attr-lang="fr">
+                                            <option>changer</option>
+                                            {% for parti in les_partis %}
+                                            <option value="{{ parti }}">{{ parti }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <a href="#parti_fr" attr-lang="fr" class="voir_parti">Voir le parti</a>
+                                    </div>
+                                    <div class="to_show_default input_wrapper" id="parti_fr" attr-lang="fr">
+                                        <label for="{{ inlines.0.0.id_for_label }}">Parti politique:</label>
+                                        {{ inlines.0.0.hidden_fields.0 }}
+                                        {{ inlines.0.0.hidden_fields.1 }}
+                                        {{ inlines.0.0.errors }}
+                                        {{ inlines.0.0.value }}
+                                    </div>
+                                    <div class="fieldWrapper input_wrapper">
+                                        <label for="{{ inlines.0.1.id_for_label }}">Circonscription:</label>
+                                        {{ inlines.0.1.hidden_fields.0 }}
+                                        {{ inlines.0.1.hidden_fields.1 }}
+                                        {{ inlines.0.1.errors }}
+                                        {{ inlines.0.1.value }}
+                                    </div>
+                                    <div class="fieldWrapper input_wrapper">
+                                        <label for="{{ inlines.0.2.id_for_label }}">Préfecture ou Province:</label>
+                                        {{ inlines.0.2.hidden_fields.0 }}
+                                        {{ inlines.0.2.hidden_fields.1 }}
+                                        {{ inlines.0.2.errors }}
+                                        {{ inlines.0.2.value }}
+                                    </div>
+                                    <div class="fieldWrapper input_wrapper">
+                                        <label for="{{ inlines.0.3.id_for_label }}">Date délection:</label>
+                                        {{ inlines.0.3.hidden_fields.0 }}
+                                        {{ inlines.0.3.hidden_fields.1 }}
+                                        {{ inlines.0.3.errors }}
+                                        {{ inlines.0.3.value }}
+                                    </div>
+
+                                    <div class="fieldWrapper input_wrapper">
+                                        <label for="{{ inlines.0.4.id_for_label }}">Expiration du mandat:</label>
+                                        {{ inlines.0.4.hidden_fields.0 }}
+                                        {{ inlines.0.4.hidden_fields.1 }}
+                                        {{ inlines.0.4.errors }}
+                                        {{ inlines.0.4.value }}
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="expander">
+                            <a href="#" class="expander-trigger expander-hidden">Affiliation au sein du parlement</a>
+                            <div class="expander-content">
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.0.5.id_for_label }}">Commission:</label>
+                                    {{ inlines.0.5.hidden_fields.0 }}
+                                    {{ inlines.0.5.hidden_fields.1 }}
+                                    {{ inlines.0.5.errors }}
+                                    {{ inlines.0.5.value }}
+                                </div>
+
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.0.6.id_for_label }}">Groupe parlementaire:</label>
+                                    {{ inlines.0.6.hidden_fields.0 }}
+                                    {{ inlines.0.6.hidden_fields.1 }}
+                                    {{ inlines.0.6.errors }}
+                                    {{ inlines.0.6.value }}
+                                </div>
+
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.0.7.id_for_label }}">Autres fonctions :</label>
+                                    {{ inlines.0.7.hidden_fields.0 }}
+                                    {{ inlines.0.7.hidden_fields.1 }}
+                                    {{ inlines.0.7.errors }}
+                                    {{ inlines.0.7.value }}
+                                </div>
+
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.0.8.id_for_label }}">Ancienneté:</label>
+                                    {{ inlines.0.8.hidden_fields.0 }}
+                                    {{ inlines.0.8.hidden_fields.1 }}
+                                    {{ inlines.0.8.errors }}
+                                    {{ inlines.0.8.value }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="expander">
+                            <a href="#" class="expander-trigger expander-hidden">Informations personnelles</a>
+                            <div class="expander-content">
+                                {{ form.non_field_errors }}
+                                <div class="fieldWrapper input_wrapper">
+                                    {{ form.name.errors }}
+                                    <label for="{{ form.name.id_for_label }}">Nom:</label>
+                                    {{ form.name }}
+                                </div>
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.1.0.id_for_label }}">Profession:</label>
+                                    {{ inlines.1.0.hidden_fields.0 }}
+                                    {{ inlines.1.0.hidden_fields.1 }}
+                                    {{ inlines.1.0.errors }}
+                                    {{ inlines.1.0.value }}
+                                </div>
+
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.1.1.id_for_label }}">Biographie:</label>
+                                    {{ inlines.1.1.hidden_fields.0 }}
+                                    {{ inlines.1.1.hidden_fields.1 }}
+                                    {{ inlines.1.1.errors }}
+                                    {{ inlines.1.1.value }}
+                                </div>
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.1.2.id_for_label }}">Autres initiatives:</label>
+                                    {{ inlines.1.2.hidden_fields.0 }}
+                                    {{ inlines.1.2.hidden_fields.1 }}
+                                    {{ inlines.1.2.errors }}
+                                    {{ inlines.1.2.value }}
+                                </div>
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.1.3.id_for_label }}">Autres positions publiques:</label>
+                                    {{ inlines.1.3.hidden_fields.0 }}
+                                    {{ inlines.1.3.hidden_fields.1 }}
+                                    {{ inlines.1.3.errors }}
+                                    {{ inlines.1.3.value }}
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="panel-body" id="ar" style="direction: rtl">
+                        <div class="expander">
+                            <a href="#" class="expander-trigger">معلومات انتخابية</a>
+                            <div class="expander-content">
+                                <div id="block_changer_ar" class="to_hide_default" attr-lang="ar">
+                                    <label>تغيير الحزب</label>
+                                    <select class="changer_parti" attr-lang="ar">
+                                        <option>تغيير</option>
+                                        {% for parti in les_partis_ar %}
+                                        <option value="{{ parti }}">{{ parti }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <a href="#parti_ar" attr-lang="ar" class="voir_parti">اطلع على الحزب</a>
+                                </div>
+                                <div class="to_show_default input_wrapper" id="parti_ar" attr-lang="ar">
+                                    <label for="{{ inlines.0.9.id_for_label }}">الحزب:</label>
+                                    {{ inlines.0.9.hidden_fields.0 }}
+                                    {{ inlines.0.9.hidden_fields.1 }}
+                                    {{ inlines.0.9.errors }}
+                                    {{ inlines.0.9.value }}
+                                </div>
+
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.0.10.id_for_label }}">الدائرة الانتخابية:</label>
+                                    {{ inlines.0.10.hidden_fields.0 }}
+                                    {{ inlines.0.10.hidden_fields.1 }}
+                                    {{ inlines.0.10.errors }}
+                                    {{ inlines.0.10.value }}
+                                </div>
+
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.0.11.id_for_label }}">العمالة او الاقليم:</label>
+                                    {{ inlines.0.11.hidden_fields.0 }}
+                                    {{ inlines.0.11.hidden_fields.1 }}
+                                    {{ inlines.0.11.errors }}
+                                    {{ inlines.0.11.value }}
+                                </div>
+
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.0.12.id_for_label }}">تاريخ الانتخاب:</label>
+                                    {{ inlines.0.12.hidden_fields.0 }}
+                                    {{ inlines.0.12.hidden_fields.1 }}
+                                    {{ inlines.0.12.errors }}
+                                    {{ inlines.0.12.value }}
+                                </div>
+
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.0.13.id_for_label }}">تاريخ انتهاء النيابة:</label>
+                                    {{ inlines.0.13.hidden_fields.0 }}
+                                    {{ inlines.0.13.hidden_fields.1 }}
+                                    {{ inlines.0.13.errors }}
+                                    {{ inlines.0.13.value }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="expander">
+                            <a href="#" class="expander-trigger expander-hidden">الانتماء داخل المجلس</a>
+                            <div class="expander-content">
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.0.14.id_for_label }}">اللجنة:</label>
+                                    {{ inlines.0.14.hidden_fields.0 }}
+                                    {{ inlines.0.14.hidden_fields.1 }}
+                                    {{ inlines.0.14.errors }}
+                                    {{ inlines.0.14.value }}
+                                </div>
+
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.0.15.id_for_label }}">الفريق البرلماني:</label>
+                                    {{ inlines.0.15.hidden_fields.0 }}
+                                    {{ inlines.0.15.hidden_fields.1 }}
+                                    {{ inlines.0.15.errors }}
+                                    {{ inlines.0.15.value }}
+                                </div>
+
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.0.16.id_for_label }}">مهام آخرى:</label>
+                                    {{ inlines.0.16.hidden_fields.0 }}
+                                    {{ inlines.0.16.hidden_fields.1 }}
+                                    {{ inlines.0.16.errors }}
+                                    {{ inlines.0.16.value }}
+                                </div>
+
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.0.17.id_for_label }}">الأقدمية:</label>
+                                    {{ inlines.0.17.hidden_fields.0 }}
+                                    {{ inlines.0.17.hidden_fields.1 }}
+                                    {{ inlines.0.17.errors }}
+                                    {{ inlines.0.17.value }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="expander">
+                            <a href="#" class="expander-trigger expander-hidden">معلومات شخصية</a>
+                            <div class="expander-content">
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.0.18.id_for_label }}">الاسم:</label>
+                                    {{ inlines.0.18.hidden_fields.0 }}
+                                    {{ inlines.0.18.hidden_fields.1 }}
+                                    {{ inlines.0.18.errors }}
+                                    {{ inlines.0.18.value }}
+                                </div>
+
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.0.19.id_for_label }}">المهنة:</label>
+                                    {{ inlines.0.19.hidden_fields.0 }}
+                                    {{ inlines.0.19.hidden_fields.1 }}
+                                    {{ inlines.0.19.errors }}
+                                    {{ inlines.0.19.value }}
+                                </div>
+
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.0.20.id_for_label }}">السيرة الذاتية:</label>
+                                    {{ inlines.0.20.hidden_fields.0 }}
+                                    {{ inlines.0.20.hidden_fields.1 }}
+                                    {{ inlines.0.20.errors }}
+                                    {{ inlines.0.20.value }}
+                                </div>
+
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.0.21.id_for_label }}">مبادرات أخرى</label>
+                                    {{ inlines.0.21.hidden_fields.0 }}
+                                    {{ inlines.0.21.hidden_fields.1 }}
+                                    {{ inlines.0.21.errors }}
+                                    {{ inlines.0.21.value }}
+                                </div>
+
+                                <div class="fieldWrapper input_wrapper">
+                                    <label for="{{ inlines.0.22.id_for_label }}">الوظائف العامة الأخرى</label>
+                                    {{ inlines.0.22.hidden_fields.0 }}
+                                    {{ inlines.0.22.hidden_fields.1 }}
+                                    {{ inlines.0.22.errors }}
+                                    {{ inlines.0.22.value }}
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                                                                  
+                                               
+            </div>
+
+	</div>
+
+    {{ inlines.0.management_form }}
+    {{ inlines.1.management_form }}
+    {{ inlines.2.management_form }}
+    <div class="container_button">
+        <input type="submit" value="{% trans 'Sauvegarder' %}" class="button button_save" /> 
+    </div>     
+       
+    </form>
+    </div>
+{% endblock content %}
+
+{% block otherjs %}
+    <script src="/static/js/vendor/chosen.jquery.min.js"></script>
+    <script>
+        jQuery(function($){
+
+            {% if mp_tags|length > 0 %}
+                var old_tags = {{ mp_tags }};
+            {% else %}
+                var old_tags = [444];
+            {% endif %}
+//console.log({{ mp_tags|length }});
+            $('#ar').click(function (e) {
+              e.preventDefault()
+              $(this).tab('show')
+            })
+            $('.chosen-select').chosen({
+                max_selected_options: 10,
+                placeholder_text_multiple: '{% trans "votre député-e" %}',
+                no_results_text : '{% trans "Aucun résultat ne correspond à votre recherche" %}'
+            });
+            //save tag
+            $('#saveTag').on('click', function(evt){
+                evt.preventDefault();
+
+                if ($('.chosen-select').val()) {
+                    var selected_tags = [];
+                    $.each($('.chosen-select').val(), function (i, val) {
+                        selected_tags.push(val);
+                    });
+                }else{
+                    var selected_tags = [555];
+                }
+                $.ajax({
+                    url : '{% url "add_tag_to_mp" %}', // the endpoint
+                    type : "POST", // http method
+                    data : { selected_tags : selected_tags.join(','), old_tags : old_tags.join(','), candidate_id : {{ candidate.id }} }, // data sent with the delete request
+                    success : function(json) {
+                        // hide the post
+                        $("#result_tags").fadeIn();
+                        document.getElementById("result_tags").textContent = "tags updated";
+                        $("#result_tags").fadeOut(3000);
+                        old_tags = json['updated_tags'].length ? json['updated_tags'] : [444];
+                    },
+
+                    error : function(xhr,errmsg,err) {
+                        // Show an error
+                        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                    }
+                });
+            });
+
+            //changer le parti
+            $('.to_show_default').on('click', 'textarea', function(evt){
+                var attrLang = $(this).parents('div.to_show_default').attr('attr-lang');
+                $('#parti_'+attrLang).hide();
+                $('#block_changer_'+attrLang).show();
+            });
+
+            $('select.changer_parti').on('change', function(evt) {
+                if($(this).prop('selectedIndex') !== 0) {
+                    var attrLang = $(this).attr('attr-lang');
+                    var idHtml = attrLang == "fr" ? "0" : "9"
+                    $('#id_backgroundcandidate_set-'+idHtml+'-value').val($(this).val());
+                    $("#block_changer_"+attrLang).hide();
+                    $('#parti_'+attrLang).show();
+                }
+            });
+
+            $('a.voir_parti').on('click', function(evt){
+                evt.preventDefault();
+                var attrLang = $(this).attr('attr-lang');
+                $("#block_changer_"+attrLang).hide();
+                $($(this).attr('href')).show();
+            });
+
+            //state panels and change them
+            $('a.panel-click').on('click', function(evt) {
+                evt.preventDefault();
+                if($(this).attr('attr-lang') == 'fr')
+                { $('#ar').hide();}
+                else
+                { $('#fr').hide(); }
+
+                $($(this).attr('href')).show();
+            })
+        });
+
+    function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+    </script>
+{% endblock otherjs %}

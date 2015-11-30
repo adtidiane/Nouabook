@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% load votainteligente_extras %}
+{% load candideitorg_templetags %}
+
+{% block title %} operations {% endblock %}
+{% block content %}
+    {% for i in data %}
+        <li>{{ i }}</li>
+    {% endfor %}
+
+    {{ chaine }} counter 1 : {{counter}} et counter 2: {{counter2}}
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% load votainteligente_extras %}
+
+{% block title %} {% trans "Espace acces député" %}{% endblock %}
+
+{% block othercss %}
+<style>
+    ul.errorlist li {color: red;}
+</style>
+{% endblock othercss %}
+
+{% block pack_lang %}
+    {% include "elections/langage_html.html" with redirect_to="/login" %}
+{% endblock pack_lang %}
+
+{% block content %}
+    <div id="content">
+        <div id="account">
+            <div class="outer-wrapper">
+                <div class="inner-wrapper">
+                    <h2>{% trans "Compte député-e" %}</h2>
+                    <div class="panel-centered panel">
+                        <div class="panel-head">
+                            <h3 class="panel-title">{% trans "Se connecter à Nouabook" %}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-signin" action="" method="post">{% csrf_token %}
+                                {{form.as_p}}
+
+                                <div class="input_wrapper input_action">
+                                    <a href="mailto:contact@nouabook.ma?Subject={{mot_de_passe|iriencode}}" target="_top">{% trans "Mot de passe oublié" %}</a>
+                                    <input type="submit" class="button" value="{% trans 'Se connecter' %}">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="notice">
+                        <a href="mailto:contact@nouabook.ma?Subject={{cliquez_ici|iriencode}}" target="_top">{% trans "Cliquez ici" %}</a> {% trans "si vous êtes un-e Député-e et que vous souhaitez activer votre profil sur Nouabook.ma!" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

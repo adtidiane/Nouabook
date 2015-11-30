@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% load votainteligente_extras %}
+
+{% block title %}{% trans "Question pour vos députés et députées? Posez la sur Nouabook.ma" %}{% endblock title %}
+
+{% block pack_lang %}
+  {% include "elections/langage_html.html" with redirect_to=redirection %}
+{% endblock pack_lang %}
+
+{% block othercss %}
+ <link rel="stylesheet" media="all" href="/static/css/chosen.min.css" />
+ <link rel="stylesheet" media="all" href="/static/css/modal.css" />
+ <style>
+	div[class*="chosen-container"]{ background-color: #fff; border: 2px solid #d5ded9; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) inset; box-sizing: border-box;
+    font-family: Lato,"Helvetica Neue",Helvetica,Roboto,Arial,sans-serif; font-size: 1em; margin-bottom: 0.75em; padding:0.5em; transition: border-color 0s ease 0s;
+    width: 100%;}
+	.chosen-container-multi .chosen-choices li.search-field input[type="text"]{ padding:0; border:0 none;}
+	.chosen-container-multi .chosen-choices, .chosen-container-active .chosen-choices {border: 0 !important; box-shadow:0 none !important;background-image:none;}
+	.chosen-choices li.search-field input[type="text"]{height:20px !important;}
+	#message_video, div.error, #id_people_chosen, #id_people {display:none;}
+	.chosen-container{width:80% !important;}
+ </style>
+{% endblock othercss %}
+
+{% block fb_init %}
+	<script>
+		window.fbAsyncInit = function() {
+		  FB.init({
+	          appId: '{{ "app_id"|fbsetting }}', xfbml: true, version: '{{ "version"|fbsetting }}',status: true, cookie: true
+	        });		  
+		}
+	</script>
+{% endblock fb_init %}
+
+{% block content %}
+<div id="ask">
+	<div class="outer-wrapper">
+		<div class="inner-wrapper">
+			<h2>{% trans "Posez votre question" %}: {% get_name_candidate candidate LANGUAGE_CODE %}</h2>
+            <div class="message error"></div>
+			<form action="{% url 'posez_view' %}" method="post" id="form_ask">
+				{% csrf_token %}
+				<fieldset>
+
+                    <div class="input_wrapper">
+                        <label for="input-tag">{% trans "Choisissez un thème" %}</label>
+                        <!--<input type="text" placeholder="votre député(e)" id="input-mp">-->
+                    </div>
+                    {{ form.tags }}
+
+					{{ form.people }}
+
+					<div class="input_wrapper">
+						<label for="id_subject">{% trans "Sujet" %}</label>
+						<input type="text" placeholder="{% trans "Exemple: l'accès aux soins médicaux" %}" id="id_subject" name="subject">
+					</div>
+
+					<div class="input_wrapper">
+						<label for="id_content">{% trans "Message" %}</label>
+						<input type="checkbox" id="id_is_video" name="is_video">
+						<span class="expli_video" title="{% trans 'Cochez la case pour partager le lien de la vidéo' %}">{% trans "Partagez un message vidéo via YouTube" %}</span>
+						<textarea name="content" id="id_content" cols="30" rows="10"></textarea>
+						<input type="url" placeholder="https://www.youtube.com/watch?v=aYWdpIdjqVQ ou https://youtu.be/aYWdpIdjqVQ" class="expli_video" id="message_video" title="{% trans 'Publiez votre vidéo sur YoutTube et partagez le lien ici' %}">
+					</div>
+					<div class="input_wrapper">
+						<label for="id_author_name">{% trans "Nom complet" %}</label>
+						<input type="text" placeholder="{% trans 'Nom et prénom' %}" id="id_author_name" name="author_name">
+					</div>
+					<div class="input_wrapper">
+						<label for="id_author_ville">{% trans "Votre ville" %}</label>
+						<input type="text" placeholder="{% trans 'Votre ville' %}" id="id_author_ville" name="author_ville">
+					</div>
+					<div class="input_wrapper">
+						<label for="id_author_email">{% trans "Votre email" %}</label>
+						<input type="text" placeholder="{% trans 'Votre adresse email' %}" id="id_author_email" name="author_email">
+					</div>
+					<div class="input_wrapper checkboxes">
+						<div class="checkbox"> {% trans "charte d'utilisation" as la_charte %}
+							<input type="checkbox" value="1" id="charte_lu" checked>
+							{% blocktrans %}J'ai lu et approuvé la <a href="/{{ LANGUAGE_CODE }}/page/charte/" target="_blank">{{ la_charte }}</a>{% endblocktrans %}
+						</div>
+						<div class="checkbox facebook-checkbox">
+						{% comment %}<input type="hidden" value="0" name="fbshared" /> {% endcomment %}
+							<input type="checkbox" value="1" name="fbshared" id="fb_confirm" checked> {% trans "Partager sur Facebook" %}
+							<div class="facebook-button" >
+								<fb:login-button autologoutlink="true" login_text="{% trans 'Connexion avec votre compte facebook' %}" scope="publish_actions" max-rows="1"></fb:login-button>
+								<br />
+								<div id="fb_error" class="message error"></div>
+							</div>
+						</div>
+					</div>
+					<div class="input_wrapper">
+						<input type="submit" class="button" value="{% trans 'Envoyer' %}">
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade ferme" id="messageModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close ferme" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">{% trans "Message" %}</h4>
+      </div>
+      <div class="modal-body" id="mess_modal">
+	  </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default ferme" data-dismiss="modal">{% trans "fermer" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block otherjs %}
+	<script src="/static/js/vendor/chosen.jquery.min.js"></script>
+	<script src="/static/js/modal.js"></script>
+	<script src="/static/js/ask.mp3.js"></script>
+	<script>
+		jQuery(function($){
+
+			$.each(['#id_people','#id_tags'], function(i, val){
+				$(val).chosen({
+	                max_selected_options: 1,
+	                placeholder_text_multiple: i==0 ? '{% trans "votre député-e" %}' : '{% trans "les thèmes" %}',
+	                no_results_text : '{% trans "Aucun résultat ne correspond à votre recherche" %}'
+				});
+			});
+
+			post_question({
+				facebook_info: '{% trans "Voir plus sur www.nouabook.ma" %}',
+				question_partage: '{% trans "Votre question est partagée sur facebook" %}',
+				no_partage: '{% trans "Message non partagé, veuillez réessayer!" %}',
+				lecture_charte: '{% trans "Veuillez confirmer avoir lu et approuvé la charte d’utilisation!" %}',
+				connexion_fb: '{% trans "Connectez-vous pour partager sur facebook" %}',
+				connexion_appfb: '{% trans "Connectez vous avec notre application NouabApp" %}',
+				invalid_email: '{% trans "Veuillez saisir une adresse e-mail valide" %}',
+				invalid_champ: '{% trans "IMPORTANT! Merci de réviser le contenu du formulaire que vous tentez de soumettre et de vous assurer que toutes les cases sont renseignées" %}'
+			});
+			do_check_url('{% trans "Veuillez entrer un lien YouTube valable <br /> (décochez la case si vous ne voulez pas envoyer de message via YouTube)." %}');
+
+			$('.expli_video').tipsy({gravity:'w'});
+		});
+	</script>
+{% endblock otherjs %}
+
+{% block fb_load %}
+<div id="fb-root"></div>
+	<script>
+		  (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+		 {% if LANGUAGE_CODE == 'fr' %}
+         js.src = "//connect.facebook.net/fr_FR/sdk.js";
+		 {% else %}
+		 js.src = "//connect.facebook.net/ar_AR/sdk.js";
+		 {% endif %}
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+	</script>
+{% endblock fb_load %}

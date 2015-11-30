@@ -1,0 +1,385 @@
+{% extends "base_backend_mp.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% load votainteligente_extras %}
+{% load pagination_tags %}
+{% load filename %}
+
+{% block title %}{% trans "Votre journal | Nouabook.ma" %}{% endblock title %}
+
+{% block pack_lang %}
+    {% include "elections/langage_html.html" with redirect_to="/accounts/status" %}
+{% endblock pack_lang %}
+
+
+{% block content %}
+    <div id="timeline">
+        <div class="outer-wrapper">
+            <div class="inner-wrapper">
+                {% if message_done %}
+                    <div class="message success"><span>{% trans "Votre publication est publiée !!!" %}</span></div>
+                {% endif %}
+                {% if form.errors %}
+                    <div class="message error">{% trans "Veuillez reessayer la publication n'a pas été enregistrée" %}</div>
+                    {% for error in form.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+                <p class="lead">{% trans "Mettez les citoyen-nes à jour par rapport à votre activité parlementaire." %}</p>
+                <div class="status-form">
+                    <div class="panel">
+                        <div class="panel-body">
+                            <div class="input_wrapper">
+                                <div class="input_selector">
+                                    <label for="input-option-1" class="option-status">
+                                        <input type="radio" id="input-option-1" name="input-option" checked value="status">
+                                        <span>{% trans "Publication" %}</span>
+                                    </label>
+                                </div>
+                                <div class="input_selector">
+                                    <label for="input-option-2" class="option-legislation">
+                                        <input type="radio" id="input-option-2" name="input-option" value="legislation">
+                                        <span>{% trans "Législation" %}</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <hr class="separator">
+                        </div>
+                        <form method="post" action="" id="status_submit" enctype="multipart/form-data">{% csrf_token %}
+                            <fieldset>
+                                <div class="panel-body">
+                                    <div class="input_wrapper">
+                                        {{ form.text }}
+                                    </div>
+                                </div>
+                                <div class="panel-footer">
+                                    <div class="input_wrapper input_action">
+                                        <div class="option-legislation-block">
+                                            <div class="input_wrapper">
+                                                {{ form.title }}
+                                            </div>
+                                            <div class="input_wrapper">
+                                                {{ form.url }}
+                                            </div>
+                                        </div>
+                                        <div class="add-video-block">
+                                            <div class="input_wrapper">
+                                                {{ form.urlVideo }}
+                                            </div>
+                                        </div>
+                                        <div class="add-photo-block">
+                                            <div class="input_wrapper">
+                                                {{ form.files }}
+                                                <!--<input id="input-photo" type="file">-->
+                                            </div>
+                                        </div>
+                                        <a href="" class="add-photo">{% trans "Ajouter une photo" %}</a>
+                                        <a href="" class="add-video">{% trans "Ajouter une video" %}</a>
+                                        {{ form.category }} {{ form.candidate }}
+                                        <input type="submit" class="button" value="{% trans 'publier' %}">
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+
+                <h2>{% trans "Toutes les publications" %}</h2>
+                <div class="timeline">
+                    {% autopaginate all_status_update 10 %}
+                    {% for status in all_status_update %}
+                    {% total_question questions status.id as total %}
+                    <div id="result-{{ status.id }}"></div>
+                    {% if total > 0 %}
+                    <div class="thread">
+                        <div class="message {%if status.title %}legislation{% endif %}" id="status-{{ status.id }}">
+                            <div class="date">{% trans "Publié le" %} : {{ status.updated }}</div>
+                            <div class="entry">
+                                {% if status.urlVideo %}
+                                <div class="entry-picture video">
+                                    {%  display_content_type status.urlVideo 'status' '100%' '400' %}
+                                </div>
+                                {% elif not status.urlVideo %}
+                                 <div class="entry-picture">
+                                    <div class="gallery">
+                                    {% for attachment in attachments %}
+                                        {% if attachment.messageId  ==  status.id and attachment.file|is_image %}
+                                                <img src="/cache/attachments/{{ attachment.file|filename }}" />
+                                        {% endif %}
+                                    {% endfor %}
+                                    </div>
+                                </div>                                   
+                                {% endif %}
+                                <div class="profile-picture-wrapper">
+                                    {% if candidate.photo %}
+                                        <img src="{{ candidate.photo }}" alt="{{candidate.name}}"  class="profile-picture medium">
+                                    {% else %}
+                                        <img src="/static/img/default-profile-picture.png" alt="{{candidate.name}}" class="profile-picture medium">
+                                    {% endif %}
+                                </div>
+                                <div class="entry-inner">
+                                    <h3>{% get_name_candidate candidate LANGUAGE_CODE %}</h3>
+                                    {% if status.title %}
+                                    <h4>{% trans "Législation" %} : {{ status.title }}</h4>
+                                    {% endif %}
+                                    <p dir="auto">
+                                        {% filter linebreaksbr %}
+                                            {{ status.text }}
+                                        {% endfilter %}
+                                        {% if status.url %}
+                                        <br /><a href="{{status.url}}" target="_blank">{% trans "Voir legislation" %}</a>
+                                        {% endif %}
+                                    </p>
+                                    <ul class="attachments">
+                                    {% for attachment in attachments %}
+                                        {% if attachment.messageId  ==  status.id and not attachment.file|is_image %}
+                                            <li>
+                                                <a class="label label-primary" href="/cache/attachments/{{ attachment.file|filename }}" target="_blank"><i class="fa fa-paperclip"></i> {{ attachment.file|filename }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </ul>
+                                    <a href="#" status-id="{{ status.id }}" class="delete">{% trans "Supprimer" %}</a>
+                                    <a href="{% url 'account_status_update_view' status.id %}" class="edit">{% trans "Modifier" %}</a>
+                                    {% if total > 1 %}
+                                    <div class="count toggle-answers">{{ total }} {% trans "commentaires" %}</div>
+                                    {% else %}
+                                    <div class="count toggle-answers">{{ total }} {% trans "commentaire" %}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% for question in questions %}
+                            {% if question.nouabookItem_id  ==  status.id %}
+                                {% with answer=question.answers.all|first %}
+                                <div class="message answer {%if answer%}answered{%endif%}">
+                                    <div class="date">{{ question.moderated_at|date:"SHORT_DATE_FORMAT" }}</div>
+                                    <div class="entry">
+                                        <div class="profile-picture-wrapper"><img src="/static/img/default-profile-picture.png" alt="" class="profile-picture medium"></div>
+                                        <div class="entry-inner">
+                                            <h3>{{question.author_name}}<div class="meta">{{question.author_ville}}</div></h3>
+                                            <p dir="auto">{% filter linebreaksbr %}
+                                                    {% display_content_type question.content 'question' %}
+                                                {% endfilter %}
+                                            </p>
+                                            {% if not answer %}
+                                            <a href="{% url 'account_repondre_message_view' question.id %}" class="reply">{% trans 'Répondre' %}</a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if answer %}
+                                <div class="message answer own">
+                                    <div class="date">{{ answer.created|date:"SHORT_DATE_FORMAT" }}</div>
+                                    <div class="entry">
+                                        <div class="profile-picture-wrapper active">
+                                            {% if candidate.photo %}
+                                                {% comment %}{% thumbnail candidate.photo "300x300" crop="center" as im %}
+                                                     <img src="{{im.url}}" alt="{{candidate.name}}" class="profile-picture medium">
+                                                {% endthumbnail %}{% endcomment %}                                   
+                                                    <img src="{{ candidate.photo }}" alt="{{candidate.name}}" class="profile-picture medium">
+                                                {% else %}
+                                                    <img src="/static/img/default-profile-picture.png" alt="{{candidate.name}}" class="profile-picture medium">
+                                             {% endif %}
+                                        </div>
+                                        <div class="entry-inner">
+                                            <h3>{% get_name_candidate candidate LANGUAGE_CODE %}</h3>
+                                            <p dir="auto">
+                                                {% filter linebreaksbr %}
+                                                    {% display_content_type answer.content 'reponse' %}
+                                                {% endfilter %}
+                                            </p>
+                                            <ul class="attachments">
+                                            {% for attachment in AnswerAttachments %}
+                                                {% if attachment.messageId  ==  question.id %}
+                                                    <li><a href="/cache/attachments/{{ attachment.file|filename }}" target="_blank">{{ attachment.file }}</a></li>
+                                                {% endif %}
+                                            {% endfor %}
+                                            </ul>
+                                            <a href="{% url 'account_update_repondre_message_view' question.id %}" class="edit">{% trans "Modifier la réponse" %}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% endwith %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% elif total == 0 %}
+                    <div class="message {%if status.title %}legislation{% endif %}" id="status-{{ status.id }}">
+                            <div class="date">{% trans "Publié le" %} : {{ status.updated }}</div>
+                            <div class="entry">
+                                {% if status.urlVideo %}
+                                <div class="entry-picture video">
+                                    {%  display_content_type status.urlVideo 'status' '100%' '400' %}
+                                </div>
+                                {% elif not status.urlVideo %}
+                                 <div class="entry-picture">
+                                    <div class="gallery">
+                                    {% for attachment in attachments %}
+                                        {% if attachment.messageId  ==  status.id and attachment.file|is_image %}
+                                            <img src="/cache/attachments/{{ attachment.file|filename }}" />
+                                        {% endif %}
+                                    {% endfor %}
+                                    </div>
+                                </div>                                   
+                                {% endif %}
+                                <div class="profile-picture-wrapper">
+                                    {% if candidate.photo %}
+                                        <img src="{{ candidate.photo }}" alt="{{candidate.name}}"  class="profile-picture medium">
+                                    {% else %}
+                                        <img src="/static/img/default-profile-picture.png" alt="{{candidate.name}}" class="profile-picture medium">
+                                    {% endif %}
+                                </div>
+                                <div class="entry-inner">
+                                    <h3>{% get_name_candidate candidate LANGUAGE_CODE %}</h3>
+                                    {% if status.title %}
+                                    <h4>{% trans "Législation" %} : {{ status.title }}</h4>
+                                    {% endif %}
+                                    <p dir="auto">
+                                        {% filter linebreaksbr %}
+                                            {{ status.text }}
+                                        {% endfilter %}
+                                        {% if status.url %}
+                                        <br /><a href="{{status.url}}" target="_blank">{% trans "Voir legislation" %}</a>
+                                        {% endif %}
+                                    </p>
+                                    <ul class="attachments">
+                                    {% for attachment in attachments %}
+                                        {% if attachment.messageId  ==  status.id  and not attachment.file|is_image %}
+                                            <li>
+                                                <a class="label label-primary" href="/cache/attachments/{{ attachment.file|filename }}" target="_blank"><i class="fa fa-paperclip"></i> {{ attachment.file|filename }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </ul>
+                                    <a href="#" status-id="{{ status.id }}" class="delete">{% trans "Supprimer" %}</a>
+                                    <a href="{% url 'account_status_update_view' status.id %}" class="edit">{% trans "Modifier" %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}                   
+                    {% endfor %}
+                </div>
+                {% paginate %}
+            </div>
+        </div>
+    </div>
+
+    
+{% endblock content %}
+
+{% block otherjs %}
+<script src='/static/js/Multifile_Input/jquery.MetaData.js'></script>
+<script src='/static/js/Multifile_Input/jquery.MultiFile.js'></script>
+<script>
+    jQuery(function($){
+        $("#timeline").on('click', '#input-option-1:checked', function(evt){
+            $('input[name="title"]').val('');
+            $('input[name="url"]').val('');        
+        });
+
+        {% if message_done %}
+            $(window).load(function(){
+                $('.success').delay(5000).slideUp();
+                window.history.pushState({foo: 'bar'},"status account","{% url 'account_status_view' %}");
+            });
+         {% endif %}
+
+         $('#timeline').on('click', 'a.delete', function(evt){
+            evt.preventDefault();
+            if(confirm('{% trans "Voulez vous supprimer cette publication ?" %}')) {
+                var statusId = $(this).attr('status-id');
+                delete_status(statusId);
+            }
+         });
+
+         // invoke plugin
+        $('input[type=file]').MultiFile({
+            accept: 'png|jpeg|jpg|gif|pdf',
+            onFileChange: function(){
+                console.log(this, arguments);
+            }
+        });
+
+        //submit form
+        $('#status_submit').on('submit', function(evt){
+            var texte = $('#input-message').val().trim(),
+                titre =  $('input[name="title"]').val().trim(),
+                url = $('input[name="url"]').val().trim();      
+            if(!texte.length)
+            {
+                alert('{% trans "Veuillez écrire un message" %}');
+            }
+            else if($('#input-option-2').is(':checked') && (!titre.length || !url.length)) {
+                    alert('{% trans "Les champs titre et url sont obligatoires pour une législation" %}');
+                }
+            else{
+                return;
+            }
+
+            evt.preventDefault();           
+        });
+            
+    });
+
+    function delete_status(status_pk){
+        //if (confirm('are you sure you want to remove this post?')==true){
+
+           $.ajax({
+                url : '/delete_status', // the endpoint
+                type : "DELETE", // http method
+                data : { status_pk : status_pk }, // data sent with the delete request
+                success : function(json) {
+                    // hide the post
+                  $('#status-'+status_pk).remove();
+                  console.log("post deletion successful");
+                    $('#result-'+status_pk).html('<div class="alert alert-success">'+
+'<strong>{% trans "Publication supprimée" %}!</strong> '+
+'</div>').fadeTo(1300, 500).fadeOut(500, function(){
+            });
+                },
+
+                error : function(xhr,errmsg,err) {
+                    // Show an error
+                    alert('{% trans "Erreur: la suppression ne marche pas. veuillez recharger la page et ressayer.Si cette erreur persiste encore veuillez la signaler par email." %}');
+                    // add error to the dom
+                    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                }
+            });
+        //} else {
+        //    return false;
+       // }
+    };
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+</script>
+{% endblock otherjs %}

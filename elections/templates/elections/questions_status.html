@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% load votainteligente_extras %}
+{% load pagination_tags %}
+{% load filename %}
+
+{% block title %}{% trans "status et questions | Nouabook.ma" %}{% endblock title%}
+
+{% block fb_og %}
+	<meta property="og:type" content="article" />
+	{% if LANGUAGE_CODE == 'fr' %}
+	<meta property="og:locale" content="fr_FR" />
+	{% else %}
+	<meta property="og:locale" content="ar_AR" />
+	{% endif %}
+	{% if nouabookitem.title %}
+	<meta property="og:title" content="{{nouabookitem.title}}" />
+	{% else %}
+	<meta property="og:title" content="{{publication_de}}{%get_name_candidate nouabookitem.candidate LANGUAGE_CODE%}" />
+	{% endif %}
+	<meta property="og:description" content="{{ nouabookitem.text|truncatewords:300 }}" />
+	<meta property="og:url" content="{{url_base|add:'/questions-status/'}}{{nouabookitem.id}}" />
+	{% if nouabookitem.candidate.photo %}
+        <meta property="og:image" content="{{ candidate.photo }}" />
+		{% comment %}{% thumbnail nouabookitem.candidate.photo "300x300" crop="center" as im %}
+		    <meta property="og:image" content="{{ im.url }}" />
+		{% endthumbnail %}{% endcomment %}
+	{% else %} 
+		<meta property="og:image" content="http://nouabook.ma/static/img/logo.png" />
+	{% endif %}
+	<meta property="fb:app_id" content="{{ 'app_id'|fbsetting }}" />
+{% endblock fb_og %}
+
+{% block pack_lang %}
+	{% include "elections/langage_html.html" with redirect_to=redirection %}
+{% endblock pack_lang %}
+
+{% block content %}
+<div id="timeline">
+    <div class="outer-wrapper">
+        <div class="inner-wrapper">
+			{% include "elections/questions_status_html.html" with the_qa=writeitmessages status=nouabookitem attachments=attachments %}
+		</div>
+	</div>
+</div>
+{% endblock content %}
+
+{% block otherjs %}
+<script>
+	jQuery(function($){
+			
+		$(document).on('click', 'a.voter',function(evt){ evt.preventDefault();
+			question_voter($(this),'{% url "votedirect" %}');						
+		});
+				
+		$(document).on('click', 'a.rvoter',function(evt){ evt.preventDefault();
+			answer_voter($(this),'{% url "votedirect" %}');						
+		});
+				
+
+		var scroller = function(){
+			$('html, body').animate({
+				scrollTop: $(tab_lien).offset().top
+			});
+		};
+		
+		{% if message_done %}
+		$(window).load(function(){
+			$('.success').delay(7000).slideUp();
+			window.history.pushState({foo: 'bar'},"questions","{% url 'question_view' %}");
+		});
+		{% endif %}
+		
+	});
+	
+	
+</script>
+{% endblock otherjs %}

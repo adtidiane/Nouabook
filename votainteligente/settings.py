@@ -1,6 +1,6 @@
 # coding=utf-8
 import sys
-# Django settings for Nouabook project.
+# Django settings for votainteligente project.
 import os
 
 import djcelery
@@ -41,7 +41,7 @@ TIME_ZONE = 'Africa/Casablanca'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'ar' #'fr-fr' if you want set up french as default
+LANGUAGE_CODE = 'ar' #'fr-fr'
 
 SITE_ID = 1
 
@@ -64,15 +64,14 @@ LANGUAGES = (
     ('ar', gettext_noop('Arabic')),
 )
 
-LOCALE = (
-    #'/your_home_dr/Nouabook/locale/',
-)
 
 LOCALE_PATHS = (os.path.join(os.path.dirname(__file__), '../locale/'),)
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/var/www/example.com/media/"
-MEDIA_ROOT = os.path.join(PROJECT_ROOT, '..' ,'cache')
+# Example: "/var/www/example.com/media/" old : 
+#the value of media_root is temporaly 
+# a solution like upload in CDN as amazon bucket should be implemented.
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'cache')
 
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
@@ -150,7 +149,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.static",
     "django.core.context_processors.tz",
     "django.core.context_processors.request",
-    "django.contrib.messages.context_processors.messages"
+    "django.contrib.messages.context_processors.messages",
+    "votainteligente.context_processors.get_url_base",
+    "votainteligente.context_processors.word_i18n",
     )
 
 TESTING = 'test' in sys.argv
@@ -184,6 +185,8 @@ INSTALLED_APPS = (
     'mptt',
     'modeltranslation',
     'flatpages_i18n',
+    'multiupload',
+    'extra_views',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -293,6 +296,7 @@ EXTRA_APPS = ()
 
 #navigation bar
 # NAV_BAR = ('profiles','questionary','soulmate','facetoface','ask','ranking')
+NAV_BAR = ('profiles','questionary','soulmate','facetoface','ask','ranking')
 WEBSITE_METADATA = {
     'author' : u'Name of the author',
     'description' : u'A description for the site',
@@ -332,7 +336,8 @@ WEBSITE_TWITTER = {
 #setting facebook website
 WEBSITE_FACEBOOK = {
     'app_id' : 'the_app_id',
-    'secret_key' : 'the_secret_key'
+    'secret_key' : 'the_secret_key',
+    'version' : 'v2.1'
 }
 USE_POPIT = True
 #if you set USE_POPIT to False the USE_WRITEIT param will automatically be interpreted as False
@@ -345,7 +350,6 @@ CACHES = {
     }
 }
 
-# create local settings file to overwrite you database, facebook, twitter, and other infos api credentials
 try:
     from local_settings import *
     INSTALLED_APPS += EXTRA_APPS

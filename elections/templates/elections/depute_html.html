@@ -12,22 +12,44 @@
 	<div class="mp">
 		<div class="profile-picture-wrapper {% if reached %}active{% endif %}">
 			{% if candidate.photo %}
-			{% thumbnail candidate.photo "300x300" crop="center" as im %}
-			<a href="{% url 'profil_view' slug=candidate.slug %}"><img src="{{im.url}}" alt="{{ candidate.name }}" class="profile-picture normal"></a>
-			{% endthumbnail %}
+                {% comment %}<a href="{% url 'profil_view' candidate.slug %}">
+                    <img src="{{candidate.photo}}" alt="{{candidate.name}}" class="profile-picture normal">
+                </a>{% endcomment %}
+                {% thumbnail candidate.photo "300x300" crop="center" as im %}
+                    <a href="{% url 'profil_view' slug=candidate.slug %}"><img src="{{candidate.photo}}" alt="{{ candidate.name }}" class="profile-picture normal"></a>
+                {% endthumbnail %}
 			{% else %}
 			<a href="{% url 'profil_view' slug=candidate.slug %}"><img src="/static/img/default-profile-picture.png" alt="depute" class="profile-picture normal"></a>
 			{% endif %}
 			<div class="status"></div>
 		</div>
+
 		<div class="bio compact">
 		{% if LANGUAGE_CODE == 'fr' %}
 			<h3><a href="{% url 'profil_view' slug=candidate.slug %}">{{ candidate.name }}</a></h3>
+            <div class="stars">
+                {% for i in 'xxxxx' %}
+                    {% if forloop.counter <= candidate.relation.ranking %}
+                        <i class="fa fa-star"></i>
+                    {% else %}
+                        <i class="fa fa-star-o"></i>
+                    {% endif %}
+                {% endfor %}
+            </div>
 			{% for obj_background in background %}
 				<p>{% r_candidate_background candidate obj_background %}</p>
 			{% endfor %}
 		{% else %}
 			<h3><a href="{% url 'profil_view' slug=candidate.slug %}">{% r_candidate_background candidate background_name %}</a></h3>
+            <div class="stars">
+                {% for i in 'xxxxx' %}
+                    {% if forloop.counter <= candidate.relation.ranking %}
+                        <i class="fa fa-star"></i>
+                    {% else %}
+                        <i class="fa fa-star-o"></i>
+                    {% endif %}
+                {% endfor %}
+            </div>
 			{% for obj_background in background|slice:":3" %}
 				<p>{% r_candidate_background candidate obj_background %}</p>
 			{% endfor %}

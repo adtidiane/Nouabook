@@ -1,0 +1,215 @@
+{% extends "base_backend_mp.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% load votainteligente_extras %}
+{% load filename %}
+
+{% block title %}{% trans "Modifier status | Nouabook.ma" %}{% endblock title %}
+
+{% block othercss %}
+<style type="text/css">
+.photo_video_bt{height:50px;}
+</style>
+{% endblock othercss %}
+
+{% block pack_lang %}
+    {% include "elections/langage_html.html" with redirect_to=redirection %}
+{% endblock pack_lang %}
+
+{% block content %}
+    <div id="timeline">
+        <div class="outer-wrapper">
+            <div class="inner-wrapper">
+                {% if form.errors %}
+                    <div class="message error">{% trans "Veuillez reessayer les modifications n'ont pas été enregistrées" %}</div>
+                {% endif %}
+                <p class="lead">{% trans "Mettez les citoyen-nes à jour par rapport à votre activité parlementaire." %}</p>
+                <div class="status-form">
+                    <div class="panel">
+                        <div class="panel-body">
+                            <div class="input_wrapper">
+                                <div class="input_selector">
+                                    <label for="input-option-1" class="option-status">
+                                        <input type="radio" id="input-option-1" name="input-option" checked value="status">
+                                        <span>{% trans "Publication" %}</span>
+                                    </label>
+                                </div>
+                                <div class="input_selector">
+                                    <label for="input-option-2" class="option-legislation">
+                                        <input type="radio" id="input-option-2" name="input-option" value="legislation">
+                                        <span>{% trans "Législation" %}</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <hr class="separator">
+                        </div>
+                        <form method="post" id="status_submit" action="" enctype="multipart/form-data">{% csrf_token %}
+                            <fieldset>
+                                <div class="panel-body">
+                                    <div class="input_wrapper">
+                                        {{ form.text }}
+                                    </div>
+                                </div>
+                                <div class="panel-footer">
+                                    <div class="input_wrapper input_action">
+                                        <div class="option-legislation-block">
+                                            <div class="input_wrapper">
+                                                {{ form.title }}
+                                            </div>
+                                            <div class="input_wrapper">
+                                                {{ form.url }}
+                                            </div>
+                                        </div>
+                                        <div class="add-video-block">
+                                            <div class="input_wrapper">
+                                                {{ form.urlVideo }}
+                                            </div>
+                                        </div>
+                                        <div class="add-photo-block">
+                                            <div class="input_wrapper">
+                                                {{ form.files }}
+                                                <!--<input id="input-photo" type="file">-->
+                                            </div>
+                                        </div>
+                                        <div class="input_wrapper photo_video_bt">
+                                        <a href="" class="add-photo">{% trans "Ajouter une photo" %}</a>
+                                        <a href="" class="add-video">{% trans "Ajouter une video" %}</a>
+                                    </div>
+                                            <ul class="list-unstyled">
+                                                {% for attachment in attachments %}
+                                                    <li><a href="#a" id="attachment-{{ attachment.id }}">x </a> {{ attachment.file|filename }} <a href="/cache/attachments/{{ attachment.file|filename }}" target="_blank">{% trans "Voir" %}</a></li>
+                                                    <div id="result-{{ attachment.id }}"></div>
+                                                {% endfor %}
+                                            </ul>
+                                        
+                                        {{ form.category }} {{ form.candidate }}
+                                        <input type="submit" class="button" value="{% trans 'Modifier' %}">
+                                        <a href="{% url 'account_status_view' %}" class="cancel">{% trans "Annuler" %}</a>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+{% block otherjs %}
+<script src='/static/js/Multifile_Input/jquery.MetaData.js'></script>
+<script src='/static/js/Multifile_Input/jquery.MultiFile.js'></script>
+<script>
+        // wait for document to load
+        jQuery(function($){
+           // action for status or legislation choice
+            var type_item=$('input[name="url"]:first').val().length && $('input[name="title"]:first').val().length ? "legislation" :"status";
+
+            if(type_item === "legislation"){
+                $('#input-option-2').prop('checked', true);
+                $('#input-option-1').prop('checked', false);
+                $('div.option-legislation-block').show();
+            }
+
+            if($('input[name="urlVideo"]:first').val().length){
+                $('div.add-video-block').show();
+            }
+            // invoke plugin
+            $('input[type=file]').MultiFile({
+                accept: 'png|jpeg|jpg|gif|pdf',
+                onFileChange: function(){
+                    console.log(this, arguments);
+                }
+            });
+
+             $("li").on('click', 'a[id^=attachment-]', function(){
+                var attachment_pk = $(this).attr('id').split('-')[1];
+                console.log(attachment_pk) // sanity check
+                delete_file(attachment_pk);
+            });
+
+            //submit form
+            $('#status_submit').on('submit', function(evt){
+                var texte = $('#input-message').val().trim(),
+                    titre =  $('input[name="title"]').val().trim(),
+                    url = $('input[name="url"]').val().trim();   
+                if(!texte.length) {
+                    alert('{% trans "Veuillez écrire un message" %}');                    
+                }
+                else if($('#input-option-2').is(':checked') && (!titre.length || !url.length)) {
+                    alert('{% trans "Les champs titre et lien sont obligatoires pour une législation" %}');
+                }
+                else{ 
+                    if($('#input-option-1').is(':checked')) {
+                        $('input[name="title"]').val('');
+                        $('input[name="url"]').val(''); 
+                    }                   
+                    return;
+                }
+                evt.preventDefault();        
+            });
+
+        });       
+
+        function delete_file(attachment_pk){
+            //if (confirm('are you sure you want to remove this post?')==true){
+                $.ajax({
+                    url : '/delete_file', // the endpoint
+                    type : "DELETE", // http method
+                    data : { attachment_pk : attachment_pk }, // data sent with the delete request
+                    success : function(json) {
+                        // hide the post
+                      $('#attachment-'+attachment_pk).parent().addClass('removed-item').remove();
+                    /*.one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(e) {
+                      $(this).remove();
+                   });*/
+                      //console.log("post deletion successful");
+                        $('#result-'+attachment_pk).html('<div class="alert alert-success">'+
+    '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
+    '<strong>{% trans "Fichier supprimé" %}!</strong> '+
+  '</div>').fadeTo(1300, 500).fadeOut(500, function(){
+                });
+                    },
+
+                    error : function(xhr,errmsg,err) {
+                        // Show an error
+                        alert('{% trans "Erreur: la suppression ne marche pas. veuillez recharger la page et ressayer.Si cette erreur persiste encore veuillez la signaler par email." %}'); // add error to the dom
+                        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                    }
+                });
+            //} else {
+            //    return false;
+           // }
+        };
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    </script>
+{% endblock otherjs %}

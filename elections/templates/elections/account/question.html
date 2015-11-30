@@ -1,0 +1,75 @@
+{% extends "base_backend_mp.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% load votainteligente_extras %}
+{% load candideitorg_templetags %}
+
+{% block title %}{% trans "Question/réponses | Nouabook.ma" %}{% endblock title %}
+
+{% block pack_lang %}
+	{% include "elections/langage_html.html" with redirect_to="/accounts/profile/questions" %}
+{% endblock pack_lang %}
+
+{% block content %}
+
+    <div class="tabs" id="questions">
+	    <div class="outer-wrapper">
+	        <div class="inner-wrapper">
+	        	{% if message_done %}
+					<div class="message success"><span>{% trans "Votre réponse est enregistrée !!" %}</span></div>
+				{% endif %}
+	            <h2>{% trans "Questions reçues" %}</h2>
+	            <div id="qa">
+                    {% include "elections/account/profil_question.html" with messagesprofil=writeitmessages %}
+                </div>
+	        </div>
+	    </div>
+	</div>
+    
+{% endblock content %}
+
+{% block otherjs %}
+<script>
+	jQuery(function($){
+		//Binding event
+		$(document).on('click','.pagination a', function(evt){ 
+			evt.preventDefault(); scroller(); 
+			$('#qa').html('<div class="thread"><p class="notice">{% trans "Chargement en cours" %} . . .</p></div>');					
+			rest_lien=$(this).attr('href');
+			if(rest_lien.indexOf('depute=') == -1)
+			{rest_lien = rest_lien + '&depute={{ candidate.id }}';}
+			else if(rest_lien.indexOf('&depute={{ candidate.id }}') == -1)
+			{rest_lien = rest_lien.replace(/depute=(\w+)$/,'depute={{ candidate.id }}');}
+			
+			$.get('{% url "profil_question_ajax_backend" %}'+rest_lien,function(le_html){
+				$('#qa').html(le_html);
+			}).fail(function(){
+				console.log('fail');
+			});
+		}); 
+			
+		$(document).on('click', 'a.voter',function(evt){ evt.preventDefault();
+			question_voter($(this),'{% url "votedirect" %}');						
+		});
+				
+		$(document).on('click', 'a.rvoter',function(evt){ evt.preventDefault();
+			answer_voter($(this),'{% url "votedirect" %}');						
+		});
+				
+
+		var scroller = function(){
+			$('html, body').animate({
+				scrollTop: $('#qa').offset().top
+			});
+		};
+		
+		{% if message_done %}
+		$(window).load(function(){
+			$('.success').delay(5000).slideUp();
+			window.history.pushState({foo: 'bar'},"questions account","{% url 'account_question_view' %}");
+		});
+		{% endif %}
+	});
+</script>
+{% endblock otherjs %}

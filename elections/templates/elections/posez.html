@@ -21,6 +21,7 @@
 	.chosen-container-multi .chosen-choices, .chosen-container-active .chosen-choices {border: 0 !important; box-shadow:0 none !important;background-image:none;}
 	.chosen-choices li.search-field input[type="text"]{height:20px !important;}
 	#message_video, div.error{display:none;}
+	.chosen-container{width:80% !important;}
  </style>
 {% endblock othercss %}
 
@@ -28,8 +29,8 @@
 	<script>
 		window.fbAsyncInit = function() {
 		  FB.init({
-          appId: {{ 'app_id'|fbsetting }}, xfbml: true, version: 'v2.0',status: true, cookie: true
-        });		  
+	          appId: '{{ "app_id"|fbsetting }}', xfbml: true, version: '{{ "version"|fbsetting }}',status: true, cookie: true
+	        });		  
 		}
 	</script>
 {% endblock fb_init %}
@@ -43,11 +44,18 @@
 			<form action="{% url 'posez_view' %}" method="post" id="form_ask">
 				{% csrf_token %}
 				<fieldset>
-				<div class="input_wrapper">
-						<label for="input-mp">{% trans "A Madame / A Monsieur" %}</label>
-						<!--<input type="text" placeholder="votre député(e)" id="input-mp">-->
-					</div>
-					{{ form.people }} 
+                    <div class="input_wrapper">
+                        <label for="input-tag">{% trans "Choisissez un thème" %}</label>
+                        <!--<input type="text" placeholder="votre député(e)" id="input-mp">-->
+                    </div>
+                    {{ form.tags }}
+
+                    <div class="input_wrapper">
+                        <label for="input-mp">{% trans "A Madame / A Monsieur" %}</label>
+                        <!--<input type="text" placeholder="votre député(e)" id="input-mp">-->
+                    </div>
+					{{ form.people }}
+
 					<div class="input_wrapper">
 						<label for="id_subject">{% trans "Sujet" %}</label>
 						<input type="text" placeholder="{% trans "Exemple: l'accès aux soins médicaux" %}" id="id_subject" name="subject">
@@ -111,6 +119,7 @@
     </div>
   </div>
 </div>
+
 {% endblock content %}
 
 {% block otherjs %}
@@ -118,17 +127,63 @@
 	<script src="/static/js/modal.js"></script>
 	<script src="/static/js/ask.mp3.js"></script>
 	<script>
+		var oldPeople;
+
+		function get_deputes(str){          
+           
+            $.ajax({
+                async: false,
+                type: "GET",
+                url: "{% url 'ajax_mp_tag_view' %}",
+                data: { tag_id : str },
+                datatype: 'json',
+                success: function(result) {
+                    if (result[0] != -1) {
+                        // I usually receive a list of items here
+                        // I use this list to replace the dependant select
+
+                        $('#id_people').find('option').remove().end();  // Use to empty the select
+
+                        // Now we append the industry options we've received
+                        $.each(result, function(i, valueObj){
+                        	$('#id_people').append($('<option>', {
+                                value: valueObj['id'],
+                                text: valueObj['name']
+                        	}));
+	                    });
+                        
+                    } else {
+                        $('#id_people').html(oldPeople);
+                    }
+
+                    $("#id_people").trigger("chosen:updated");
+                }
+            });
+        }
+
 		jQuery(function($){
-			$('#id_people').attr('placeholder', '{% trans "votre député-e" %}');
-			$('.chosen-select').chosen({
-			max_selected_options: 1,
-			placeholder_text_multiple: '{% trans "votre député-e" %}',
-			no_results_text : '{% trans "Aucun résultat ne correspond à votre recherche" %}'
+           	
+			$.each(['#id_people','#id_tags'], function(i, val){
+				$(val).chosen({
+	                max_selected_options: 1,
+	                placeholder_text_multiple: i==0 ? '{% trans "votre député-e" %}' : '{% trans "les thèmes" %}',
+	                no_results_text : '{% trans "Aucun résultat ne correspond à votre recherche" %}'
+				});
 			});
-			
-			{% if LANGUAGE_CODE == 'ar' %}
-			$('.chosen-select, #id_people_chosen').addClass('chosen-rtl');
-			{% endif %}
+
+			oldPeople = $('#id_people').html();
+
+			$('#id_tags').on('change', function () {
+                var str = $(this).val(); 
+                //get the MPs
+                if(str) {
+                	get_deputes(str[0]);
+
+	            } else {
+	            	$('#id_people').html(oldPeople).trigger("chosen:updated");
+		        }    
+                	
+            });			
 			
 			post_question({
 				facebook_info: '{% trans "Voir plus sur www.nouabook.ma" %}',

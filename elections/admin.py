@@ -1,4 +1,5 @@
-# coding=utf-8
+# encoding=utf-8
+
 from django.contrib import admin
 from elections.models import Election, VotaInteligenteMessage, VotaInteligenteAnswer, CandidatePerson
 from flatpages_i18n.admin import FlatpageForm, FlatPageAdmin
@@ -6,7 +7,7 @@ from flatpages_i18n.models import FlatPage_i18n
 ## OOPS this is a custom widget that works for initializing
 ## tinymce instances on stacked and tabular inlines
 ## for flatpages, just use the tinymce packaged one.
-#from content.widgets import TinyMCE 
+#from content.widgets import TinyMCE
 from tinymce.widgets import TinyMCE
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import format_html
@@ -14,6 +15,11 @@ from django.http import HttpResponse
 from elections.encoder_csv import UnicodeReader, UnicodeWriter
 from secretballot.models import Vote
 from django.core.urlresolvers import reverse
+from django.contrib.auth import admin as adminpy
+from elections.forms import UserCreationForm2
+from django.contrib.auth.models import User
+from south.models import MigrationHistory
+
 
 class ElectionAdmin(admin.ModelAdmin):
     search_fields = ['name', 'tags']
@@ -23,8 +29,9 @@ admin.site.register(Election, ElectionAdmin)
 class PageForm(FlatpageForm):
 
     class Meta:
-        model = FlatPage_i18n
+        model = FlatPage_i18n #FlatPage
         widgets = {
+            #'content' : TinyMCE(),
 		    'content_fr' : TinyMCE(),
             'content_ar' : TinyMCE(),
         }
@@ -50,7 +57,7 @@ class AnswerInline(admin.TabularInline):
 
 class CandidatePersonExtraInfoAdmin(admin.ModelAdmin):
     readonly_fields = ('person',)
-    fields = ('reachable','description', 'portrait_photo', 'custom_ribbon')
+    fields = ('reachable','description', 'portrait_photo', 'custom_ribbon', 'canUsername', 'tags')
     search_fields = ['person__name', 'person__api_instance__election__name']
 
 admin.site.register(CandidatePerson, CandidatePersonExtraInfoAdmin)
@@ -58,7 +65,7 @@ admin.site.register(CandidatePerson, CandidatePersonExtraInfoAdmin)
 
 class MensajesAdmin(admin.ModelAdmin):
     readonly_fields = ('created', 'number_votes',)
-    fields = ['author_name','author_email', 'subject', 'content', 'author_ville', 'people', 'created', 'number_votes', 'pending_status', 'rejected_status', 'moderated', 'fbshared', 'is_video']
+    fields = ['author_name','author_email', 'subject', 'content', 'author_ville', 'people', 'tags', 'created', 'number_votes', 'pending_status', 'rejected_status', 'moderated', 'fbshared', 'is_video']
     list_filter = ('moderated', 'rejected_status', 'pending_status',)
     search_fields = ['author_name', 'author_email', 'subject', 'writeitinstance__name', 'people__name']
     inlines = [
@@ -192,3 +199,21 @@ class VoteAdmin(admin.ModelAdmin):
     charger_csv_vote.short_description = u"Télécharger sous format CSV"
 
 admin.site.register(Vote, VoteAdmin)
+
+#test modificiation admin.py de django admin
+class UserInAdmin(adminpy.UserAdmin):
+    add_form = UserCreationForm2
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'password1', 'password2', 'email')}
+        ),
+    )
+
+admin.site.unregister(User)
+admin.site.register(User, UserInAdmin)
+
+class MigrationsAdmin(admin.ModelAdmin):
+    list_display = ('migration',)
+
+admin.site.register(MigrationHistory, MigrationsAdmin)

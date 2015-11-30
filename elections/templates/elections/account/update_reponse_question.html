@@ -1,0 +1,172 @@
+{% extends "base_backend_mp.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% load votainteligente_extras %}
+{% load filename %}
+
+{% block title %}{% trans "Modifier sa réponse | Nouabook.ma" %}{% endblock title %}
+
+{% block pack_lang %}
+    {% include "elections/langage_html.html" with redirect_to=redirection %}
+{% endblock pack_lang %}
+
+{% block content %}
+
+    {% with message=votainteligentemessage %}
+    <div id="questions">
+        <div class="outer-wrapper">
+            <div class="inner-wrapper">
+                {% if form.errors %}
+                    <div class="message error">{% trans "Veuillez remplir correctement les champs" %}</div>
+                {% endif %}
+                <h2>{% trans "Modifier votre réponse" %}</h2>
+                <div id="qa">
+                    <div class="thread">
+                        <div class="question message">
+                            <div class="date">
+                                {% if message.moderated_at %}
+                                    {{ message_to_answer.moderated_at|date:"SHORT_DATE_FORMAT" }}
+                                {% else %}
+                                    {{ message_to_answer.created|date:"SHORT_DATE_FORMAT" }}
+                                {% endif %}
+                            </div>
+                            <div class="entry">
+                                <div class="profile-picture-wrapper"><img src="/static/img/default-profile-picture.png" alt="" class="profile-picture medium"></div>
+                                <div class="entry-inner">
+                                    <h3>{{ message_to_answer.author_name }}<div class="meta">{{ message_to_answer.subject }}</div></h3>
+                                    <p dir="auto">{% filter linebreaksbr %}
+                                        {% display_content_type message_to_answer.content 'question' %}
+                                    {% endfilter %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="answer form">
+                            <div class="panel">
+                                <div class="panel-head">
+                                    <h3 class="panel-title">{% trans "Votre réponse" %}</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <form method="post" action="" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <fieldset>
+                                            <div class="input_wrapper">
+                                                <label for="input-message">{% trans "écrivez votre réponse" %}</label>
+                                                {{ form.content }}
+                                            </div>
+                                            <div class="input_wrapper">
+                                                <label for="input-message">{% trans "Ajouter des pièces jointes" %}</label>
+                                                {{ form.files }}
+                                                <ul class="list-unstyled">
+                                                    {% for attachment in attachments %}
+                                                        <li><a href="#a" id="attachment-{{ attachment.id }}">x </a> {{ attachment.file|filename }} <a href="/cache/attachments/{{ attachment.file|filename }}" target="_blank">{% trans "Voir" %}</a></li>
+                                                        <div id="result"></div>
+                                                    {% endfor %}
+                                                </ul>
+                                                {{ form.message }}
+                                                {{ form.person }}
+                                            </div>
+                                            <div class="input_wrapper input_action">
+                                               <!--<a href="" class="add-attachement">Ajouter une pièce jointe</a>-->
+                                                
+                                                <input type="submit" class="button" value="{% trans 'envoyer' %}">
+                                                <a href="{% url 'account_question_view' %}" class="cancel">{% trans "Annuler" %}</a>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+{% endwith %}
+    
+{% endblock content %}
+
+{% block otherjs %}
+    <script src='/static/js/Multifile_Input/jquery.MetaData.js'></script>
+    <script src='/static/js/Multifile_Input/jquery.MultiFile.js'></script>
+    <script>
+        // wait for document to load
+        jQuery(function($){
+            // invoke plugin
+            $('input[type=file]').MultiFile({
+                accept: 'png|jpeg|jpg|gif|pdf',
+                onFileChange: function(){
+                    console.log(this, arguments);
+                }
+            });
+
+                $("li").on('click', 'a[id^=attachment-]', function(){
+                var attachment_pk = $(this).attr('id').split('-')[1];
+                delete_file(attachment_pk);
+            });
+        });
+
+        
+        
+
+        function delete_file(attachment_pk){
+            //if (confirm('are you sure you want to remove this post?')==true){
+                $.ajax({
+                    url : '/delete_file', // the endpoint
+                    type : "DELETE", // http method
+                    data : { attachment_pk : attachment_pk }, // data sent with the delete request
+                    success : function(json) {
+                        // hide the post
+                      $('#attachment-'+attachment_pk).parent().addClass('removed-item').remove();
+                    /*.one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(e) {
+                      $(this).remove();
+                   });*/
+                      //console.log("post deletion successful");
+                        $('#result').html('<div class="alert alert-success">'+
+    '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
+    '<strong>{% trans "Fichier supprimé" %}!</strong> '+
+  '</div>').fadeTo(1300, 500).fadeOut(500, function(){
+                });
+                    },
+
+                    error : function(xhr,errmsg,err) {
+                        // Show an error
+                        alert('{% trans "Erreur: la suppression ne marche pas. veuillez recharger la page et ressayer.Si cette erreur persiste encore veuillez la signaler par email." %}'); // add error to the dom
+                        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                    }
+                });
+            //} else {
+            //    return false;
+           // }
+        };
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    </script>
+{% endblock otherjs %}

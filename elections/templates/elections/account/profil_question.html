@@ -1,0 +1,101 @@
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% load votainteligente_extras %}
+{% load pagination_tags %}
+{% load filename %}
+
+{% if messagesprofil %}
+{% with url_page="http://nouabook.ma" %}
+{% autopaginate messagesprofil 5 %}
+
+{% for message in messagesprofil %} 
+<div class="thread" id="thread_QR_{{ message.id }}">
+{% with answer=message.answers.all|first %}
+    <div class="question message">
+        <div class="date"> 
+            {% if message.moderated_at %}
+              {{ message.moderated_at|date:"SHORT_DATE_FORMAT" }}
+            {% else %}
+                {{ message.created|date:"SHORT_DATE_FORMAT" }}
+            {% endif %}
+        </div>
+        <div class="entry">
+            <div class="profile-picture-wrapper"><img src="/static/img/default-profile-picture.png" alt="" class="profile-picture medium"></div>
+            <div class="entry-inner">
+                <h3>{{message.author_name}}<div class="meta">{{message.author_ville}}</div></h3>
+                <p dir="auto">{% filter linebreaksbr %}
+                                {% display_content_type message.content 'question' %}
+                           {% endfilter %}</p>
+                {% if not answer %}
+                    <a href="{% url 'account_repondre_message_view' message.id %}" class="reply">{% trans 'Répondre' %}</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="actions">
+            {% with dept=message.people.all|first %}
+            {% with phrase=question_a|add:dept.name|add:sur %}
+            <ul>
+                <li class="like"><span id="count_QR_{{ message.id }}" class="counter">{{ message.total_upvotes }}</span></li>
+            </ul>
+            {% endwith %}{% endwith %}
+        </div>
+    </div>
+    {% if answer %}
+    <div class="answer message">
+        <div class="date">{{ answer.created|date:"SHORT_DATE_FORMAT" }}</div>
+        <div class="entry">
+            <div class="profile-picture-wrapper active">
+                {% if candidate.photo %}
+                    {% comment %}{% thumbnail candidate.photo "300x300" crop="center" as im %}
+                         <img src="{{im.url}}" alt="{{candidate.name}}" class="profile-picture medium">
+                    {% endthumbnail %}{% endcomment %}                                   
+                        <img src="{{ candidate.photo }}" alt="{{candidate.name}}" class="profile-picture medium">
+                    {% else %}
+                        <img src="/static/img/default-profile-picture.png" alt="{{candidate.name}}" class="profile-picture medium">
+                 {% endif %}
+            </div>
+            <div class="entry-inner">
+                <h3>{% get_name_candidate candidate LANGUAGE_CODE %}</h3>
+                <p dir="auto">
+                    {% filter linebreaksbr %}
+                        {% display_content_type answer.content 'reponse' %}
+                    {% endfilter %}
+                </p>
+                <ul class="attachments">
+                {% for attachment in AnswerAttachments %}
+                    {% if attachment.messageId  ==  message.id %}
+                        <li><a href="/cache/attachments/{{ attachment.file|filename }}" target="_blank"><i class="fa fa-paperclip"></i> {{ attachment.file|filename }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                </ul>
+                <a href="{% url 'account_update_repondre_message_view' message.id %}" class="edit">{% trans "Modifier la réponse" %}</a>
+            </div>
+        </div>
+        <div class="actions">
+            {% with phrase=reponse_par|add:answer.person.name|add:sur %}
+            <ul>
+                <li class="like"><span class="counter" id="Rcount_QR_{{ answer.id }}">{{ answer.total_upvotes }}</span></li>
+            </ul>
+            {% endwith %}
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+</div>
+{% endfor %}
+
+{% paginate %}
+{% endwith %}
+{% else %}
+<div class="thread">
+	<div class="question message">
+        <div class="date">&nbsp;</div>
+        <div class="entry">
+            {% if mess_content %}<h3>{{ mess_content }}</h3>
+            {% else %}<h3>{% trans "Aucune Question" %}</h3>
+            {% endif %}
+        </div>
+	</div>
+</div>
+{% endif %}

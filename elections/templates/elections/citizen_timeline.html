@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% load votainteligente_extras %}
+{% load candideitorg_templetags %}
+{% load filename %}
+{% load pagination_tags %}
+
+{% block title %}
+{% trans "Dernières nouveautés de vos Député-es" %}
+{% endblock title %}
+
+{% block pack_lang %} 
+  {% include "elections/langage_html.html" with redirect_to="/publications" %}
+{% endblock pack_lang %}
+
+{% block content %}
+    <div id="timeline">
+        <div class="outer-wrapper">
+            <div class="inner-wrapper">
+                <h2>{% trans "Dernières nouveautés de vos Député-es" %}</h2>
+                <p class="lead">{% trans "Consultez les dernières mises à jour de vos député-es: publication,législation, etc." %}</p>
+                <div class="timeline">
+                    {% autopaginate status_updates 10 %}
+                    {% for status in status_updates %}
+                        <div class="message {% if status.title != "" %}legislation{% endif %}" id="post-{{ status.id }}">
+                            <div class="date">{{ status.created|date:"SHORT_DATETIME_FORMAT" }}</div>
+                            <div class="entry">
+                                {% if status.urlVideo %}
+                                <div class="entry-picture video">                                    
+                                    {%  display_content_type status.urlVideo 'question' %}
+                                </div>
+                                {% elif not status.urlVideo %}
+                                <div class="entry-picture">
+                                    <div class="gallery">
+                                        {% for attachment in attachments %}
+                                            {% if attachment.messageId  ==  status.id and attachment.file|is_image %}
+                                                <img src="/cache/attachments/{{ attachment.file|filename }}" />
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <a href="{% url 'profil_view' status.candidate.slug %}">
+                                    <img src="{{status.candidate.photo}}" alt="{{status.candidate.name}}" class="profile-picture medium">
+                                </a>
+                                <div class="entry-inner">
+                                    <h3>{% get_name_candidate status.candidate LANGUAGE_CODE %}</h3>
+                                    {% if status.url and status.title %}
+                                    <h4>
+                                        {{ status.title }}                                        
+                                        <a href="{{ status.url }}" target="_blank"><span style="font-size: 13px; font-weight: 100"> - {% trans "Voir Législation" %}</span></a>
+                                    </h4>
+                                    {% endif %}
+                                    <p dir="auto">{% filter linebreaksbr %}{{ status.text }}{% endfilter %}</p>
+                                    <ul class="attachments">
+                                        {% for attachment in attachments %}
+                                        {% if attachment.messageId  ==  status.id and not attachment.file|is_image %}
+                                            <li>
+                                                <a href="/cache/attachments/{{ attachment.file|filename }}" target="_blank">{{ attachment.file|filename }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="actions">
+                                {% with phrase=publication_de|add:status.candidate.name %}
+                                <ul>
+                                    <li class="ask">
+                                        <a class="temp_resize" href="{% url 'posez_status_view' status.candidate.id status.id %}">{% trans "Posez une question sur cette publication" %}</a>
+                                    </li>
+                                    <li class="share">
+                                        <a href="">{% trans "Partager" %}</a>
+                                        <ul>
+                                            <li class="twitter"><a href="https://twitter.com/intent/tweet?url={{url_base|urlencode}}{% url 'questions_status_view' status.id %}&amp;text={{phrase|add:': '|iriencode}}{{status.text|truncatechars:80|iriencode}}&amp;via=nouabook&amp;related=nouabook&amp;lang={{LANGUAGE_CODE}}" target="_blank">{% trans "Partager sur Twitter" %}</a></li>
+                                            <li class="facebook"><a href="http://www.facebook.com/sharer.php?s=100&amp;p[url]={{url_base|urlencode}}{% url 'questions_status_view' status.id %}&amp;p[title]={{phrase|iriencode}}&amp;p[summary]={{status.text|truncatewords:300|iriencode}}" target="_blank">{% trans "Partager sur Facebook" %}</a></li>
+                                            <li class="email"><a href="mailto:?subject={{phrase|iriencode}}&amp;body={{status.text|truncatewords:200|iriencode}}...%0D%0A{{url_base|urlencode}}{% url 'questions_status_view' status.id %}" target="_top">{% trans "Partager par email" %}</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><div class="fb-like" data-href="{{url_base|add:'/questions-status/'}}{{status.id}}" data-layout="button_count"></div></li>
+                                    <li>
+                                    {% total_question status.votainteligentemessage_set status.id True as total %}
+                                    {% if total > 1 %}
+                                        <a href="{% url 'questions_status_view' status.id %}" style="color: #003bb3">{{ total }} {% trans "questions sur cette publication" %}</a>
+                                    {% elif total == 1 %}
+                                        <a href="{% url 'questions_status_view' status.id %}" style="color: #003bb3">{{ total }} {% trans "questions sur cette publication" %}</a>
+                                    {% endif %}
+                                </li>
+                                </ul>
+                                {% endwith %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% paginate %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

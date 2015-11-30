@@ -34,7 +34,7 @@ var search_autocomplete = function(infos, url_ajax){
 		   autoFocus: true,
 		   select: function(event, ui) {
 				   $( "#txt" ).val( ui.item.name );
-				   window.location = '/profil/'+ ui.item.value
+				   window.location = '/'+infos.langue+'/profil/'+ ui.item.value
 				   return false;
 		   }
 

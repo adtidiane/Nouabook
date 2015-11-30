@@ -1,0 +1,94 @@
+{% extends "base_backend_mp.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% load votainteligente_extras %}
+
+{% block title %}{% trans "Répondre | Nouabook.ma" %}{% endblock title %}
+
+{% block pack_lang %}
+    {% include "elections/langage_html.html" with redirect_to=redirection %}
+{% endblock pack_lang %}
+
+{% block content %}
+<div id="questions">
+        <div class="outer-wrapper">
+            <div class="inner-wrapper">
+                <h2>{% trans "Répondre à la question" %}</h2>
+                <div id="qa">
+                    <div class="thread">
+                        <div class="question message">
+                            <div class="date">
+                                {% if message.moderated_at %}
+                                    {{ message_to_answer.moderated_at|date:"SHORT_DATE_FORMAT" }}
+                                {% else %}
+                                    {{ message_to_answer.created|date:"SHORT_DATE_FORMAT" }}
+                                {% endif %}
+                            </div>
+                            <div class="entry">
+                                <div class="profile-picture-wrapper"><img src="/static/img/default-profile-picture.png" alt="" class="profile-picture medium"></div>
+                                <div class="entry-inner">
+                                    <h3>{{ message_to_answer.author_name }}<div class="meta">{{ message_to_answer.subject }}</div></h3>
+                                    <p dir="auto">{% filter linebreaksbr %}
+                                        {% display_content_type message_to_answer.content 'question' %}
+                                    {% endfilter %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="answer form">
+                            <div class="panel">
+                                <div class="panel-head">
+                                    <h3 class="panel-title">{% trans "Votre réponse" %}</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <form method="post" action="" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <fieldset>
+                                            <div class="input_wrapper">
+                                                <label for="input-message">{% trans "écrivez votre réponse" %}</label>
+                                                {{ form.content }}
+                                            </div>
+                                            <div class="input_wrapper">
+                                                <label for="input-message">{% trans "Ajouter des pièces jointes" %}</label>
+                                                {{ form.files }}
+                                                {{ form.message }}
+                                                {{ form.person }}
+                                            </div>
+                                            <div class="input_wrapper input_action">
+                                               <!--<a href="" class="add-attachement">Ajouter une pièce jointe</a>-->
+                                                
+                                                <input type="submit" class="button" value="{% trans 'envoyer' %}">
+                                                <a href="{% url 'account_question_view' %}" class="cancel">{% trans "Annuler" %}</a>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+
+
+    
+
+{% endblock content %}
+    
+{% block otherjs %}
+<script src='/static/js/Multifile_Input/jquery.MetaData.js'></script>
+<script src='/static/js/Multifile_Input/jquery.MultiFile.js'></script>
+<script>
+        // wait for document to load
+        jQuery(function($){
+            // invoke plugin
+            $('input[type=file]').MultiFile({
+                accept: 'png|jpeg|jpg|gif|pdf',
+                onFileChange: function(){
+                    console.log(this, arguments);
+                }
+            });
+        });
+</script>
+{% endblock otherjs %}
